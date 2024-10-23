@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/form_style.css">
+    <link rel="icon" href="../static/images/Pepper.png" type="image/png">
+    <title>Control your Pepper</title>
+</head>
+<body>
+    <div class="bg_img"></div>
+
+    <!-- Formulaire pour récupérer les informations du robot -->
+    <form id="pepperForm">
+        <h1>Control your Pepper</h1>
+        <div class="inputs">
+            <div class="input-box">
+                <input type="text" id="robot_ip" name="robot_ip" required>
+                <label for="robot_ip">Robot IP</label>
+            </div>
+            <div class="input-box">
+                <input type="text" id="network_interface" name="network_interface" required>
+                <label for="network_interface">Network Interface</label>
+            </div>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+
+    <script src="../static/js/form_script.js"></script>
+</body>
+</html>

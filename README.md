@@ -1,0 +1,1 @@
+Avec tout cela considère que l'on a un formulaire dans form où l'on saisira Robot ip et network interface, cela sera recupéré pour manipuler le robot dans la page control, à chaque commande executer sur la page sera équivalera à une commande ros qui sera faite en arrière plan en considérant le robot ip et le network interface saisi au début

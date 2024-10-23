@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins";
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.bg_img{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url("../images/Pep2.0.png");
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.95);
+}
+
+form{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    padding: 50px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(30px);
+}
+
+.inputs{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 0;
+}
+
+.input-box label{
+    position: absolute;
+    font-weight: bolder;
+    left: 0;
+    top: 0;
+    font-size: 18px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: .5s;
+}
+
+.inputs input{
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #000;
+    height: 25px;
+    background-color: transparent;
+    outline: none;
+    width: 100%;
+}
+
+.inputs input{
+    font-weight: 700;
+}
+
+.inputs .input-box{
+    margin: 30px 0;
+    position: relative;
+    width: 100%;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label{
+    top: -20px;
+}
+
+input[type="submit"]{
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    align-self: center;
+    height: 35px;
+    width: 120px;
+    font-weight: bolder;
+    background-color: aqua;
+    border: none;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover{
+    color: white;
+}
