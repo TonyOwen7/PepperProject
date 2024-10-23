@@ -1,36 +1,38 @@
-// Sélectionner le formulaire
-const form = document.getElementById('pepperForm');
+document.getElementById('pepperForm').addEventListener('submit', function(e) {
+    e.preventDefault();  // Empêcher la soumission classique du formulaire
 
-// Ajouter un événement de soumission au formulaire
-form.addEventListener('submit', function(e) {
-    // Empêcher le comportement par défaut (rechargement de la page)
-    e.preventDefault();
+    console.log('Formulaire soumis');  // Vérifier si la soumission fonctionne
 
-    // Récupérer les valeurs des inputs
     const robotIp = document.getElementById('robot_ip').value;
     const networkInterface = document.getElementById('network_interface').value;
 
-    // Créer un objet de données à envoyer au backend
-    const data = {
-        robot_ip: robotIp,
-        network_interface: networkInterface
-    };
+    console.log('Données du robot:', { robotIp, networkInterface });  // Vérifier les données récupérées
 
-    // Envoyer les données au serveur Flask via POST
+    // Envoyer les données au serveur Flask
     fetch('/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data) // Convertir l'objet JavaScript en JSON
+        body: JSON.stringify({
+            robot_ip: robotIp,
+            network_interface: networkInterface
+        })
     })
-    .then(response => response.json()) // Attendre la réponse en JSON
+    .then(response => {
+        console.log('Réponse reçue:', response);  // Vérifier si la réponse est bien reçue
+        return response.json();
+    })
     .then(result => {
-        // Rediriger vers la page de contrôle après la soumission réussie
-        window.location.href = result.redirect_url;
+        console.log('Résultat du serveur:', result);  // Voir la réponse du serveur
+        // Rediriger vers la page de contrôle avec l'IP et l'interface du robot
+        if (result.redirect_url) {
+            window.location.href = result.redirect_url;
+        } else {
+            console.error('Pas de redirection trouvée dans la réponse');
+        }
     })
     .catch(error => {
-        // Gérer les erreurs ici
-        console.error('Erreur:', error);
+        console.error('Erreur:', error);  // Gérer les erreurs
     });
 });
