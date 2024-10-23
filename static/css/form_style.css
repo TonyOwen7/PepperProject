@@ -88,12 +88,15 @@ input[type="submit"]{
     height: 35px;
     width: 120px;
     font-weight: bolder;
-    background-color: aqua;
+    background: linear-gradient(180deg, aqua, rgb(0, 201, 201), rgb(0, 140, 140));
+    box-shadow: 0 0 10px rgba(0, 255, 255,0.9);
     border: none;
     border-radius: 10px;
-    transition: 0.3s;
+    transition: all 0.3s;
 }
 
 input[type="submit"]:hover{
     color: white;
+    box-shadow: 0 0 20px rgba(0, 255, 255,0.9);
+
 }
