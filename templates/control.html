@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="../static/css/control_style.css">
 </head>
 <body>
-    <div class="bg_img">
-
-    </div>
+    <div class="bg_img"></div>
     <div class="control">
         <h1>Control Your Pepper Robot</h1>
 
-        <!-- Stylish Joystick Interface -->
+        <!-- Toggle for Wiki Mode -->
+        <label class="switch">
+            <input type="checkbox" id="wiki-toggle">
+            <span class="slider round"></span>
+        </label>
+        <p>Wiki Pepper Mode</p>
+
+        <!-- Joystick Interface -->
         <div class="joystick-container">
             <div class="joystick-row">
                 <button id="up-left" class="joystick-button">↖</button>
@@ -33,12 +38,24 @@
             </div>
         </div>
 
-        <!-- Joystick Action Buttons -->
         <div class="action-buttons">
             <button id="turn-left" class="action-button">Turn Left ↺</button>
             <button id="turn-right" class="action-button">Turn Right ↻</button>
         </div>
     </div>
     <script src="../static/js/control_script.js"></script>
+    <script>
+        // Fonction pour envoyer l'état du toggle Wiki Pepper
+        document.getElementById("wiki-toggle").addEventListener("change", function() {
+            const isEnabled = this.checked;
+            fetch("/set_wiki_mode", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ wiki_mode: isEnabled })
+            });
+        });
+    </script>
 </body>
 </html>

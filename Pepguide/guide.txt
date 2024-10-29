@@ -1,0 +1,15 @@
+sudo apt-get install ros-noetic-gmapping
+sudo apt-get install ros-noetic-move-base
+sudo apt-get install ros-noetic-map-server
+sudo apt-get install ros-noetic-navigation
+
+roslaunch naoqi_driver naoqi_driver.launch nao_ip:=192.168.1.34
+
+roslaunch pepper_navigation slam_gmapping.launch
+
+rostopic pub /cmd_vel geometry_msgs/Twist "[0.5, 0, 0]" "[0, 0, 0]"
+
+rosrun map_server map_saver -f ~/map
+
+roslaunch map_server map_server.launch map_file:=/path/to/your/map.yaml
+
