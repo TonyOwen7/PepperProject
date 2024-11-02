@@ -131,3 +131,25 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(24px);
 }
+
+@media (max-width: 680px) {
+    h1 {
+        text-align: center;
+        width: 80%;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 880px) {
+
+    .control {
+        width: 80%;
+        padding: 50px 0;
+    }
+    
+}

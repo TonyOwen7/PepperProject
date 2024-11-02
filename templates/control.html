@@ -22,40 +22,65 @@
         <!-- Joystick Interface -->
         <div class="joystick-container">
             <div class="joystick-row">
-                <button id="up-left" class="joystick-button">↖</button>
-                <button id="up" class="joystick-button">↑</button>
-                <button id="up-right" class="joystick-button">↗</button>
+                <button onclick="sendCommand('Avancer vers la gauche')" class="joystick-button">↖</button>
+                <button onclick="sendCommand('Avancer')" class="joystick-button">↑</button>
+                <button onclick="sendCommand('Avancer vers la droite')" class="joystick-button">↗</button>
             </div>
             <div class="joystick-row">
-                <button id="left" class="joystick-button">←</button>
-                <button id="stop" class="joystick-button">⏹️</button>
-                <button id="right" class="joystick-button">→</button>
+                <button onclick="sendCommand('Tourner à gauche')" class="joystick-button">←</button>
+                <button onclick="sendCommand('stop')" class="joystick-button">⏹️</button>
+                <button onclick="sendCommand('Tourner à droite')" class="joystick-button">→</button>
             </div>
             <div class="joystick-row">
-                <button id="down-left" class="joystick-button">↙</button>
-                <button id="down" class="joystick-button">↓</button>
-                <button id="down-right" class="joystick-button">↘</button>
+                <button onclick="sendCommand('Reculer vers la gauche')" class="joystick-button">↙</button>
+                <button onclick="sendCommand('Reculer')" class="joystick-button">↓</button>
+                <button onclick="sendCommand('Reculer vers la droite')" class="joystick-button">↘</button>
             </div>
         </div>
 
+        <!-- Action Buttons -->
         <div class="action-buttons">
-            <button id="turn-left" class="action-button">Turn Left ↺</button>
-            <button id="turn-right" class="action-button">Turn Right ↻</button>
+            <button onclick="sendCommand('Calibrer caméra')" class="action-button">📷</button>
+            <button onclick="sendCommand('Tourner sur soi-même vers la gauche')" class="action-button">↺</button>
+            <button onclick="sendCommand('Tourner sur soi-même vers la droite')" class="action-button">↻</button>
+            <button onclick="sendCommand('Tour complet vers la gauche')" class="action-button">↺ 360°</button>
+            <button onclick="sendCommand('Tour complet vers la droite')" class="action-button">↻ 360°</button>
         </div>
     </div>
+    
     <script src="../static/js/control_script.js"></script>
     <script>
-        // Fonction pour envoyer l'état du toggle Wiki Pepper
+        // Toggle Wiki Mode
         document.getElementById("wiki-toggle").addEventListener("change", function() {
             const isEnabled = this.checked;
             fetch("/set_wiki_mode", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ wiki_mode: isEnabled })
-            });
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Wiki Pepper Mode ${isEnabled ? 'enabled' : 'disabled'}`);
+                }
+            }).catch(error => console.error('Error:', error));
         });
+
+        // Function to send command to Flask backend
+        function sendCommand(commandName) {
+            fetch("/command", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ command: commandName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>
