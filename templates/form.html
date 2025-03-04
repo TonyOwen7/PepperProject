@@ -22,6 +22,36 @@
                 <input type="text" id="network_interface" name="network_interface" required>
                 <label for="network_interface">Network Interface</label>
             </div>
+            <div class="radio-group">
+                <span class="radio-label">Choose a Driver:</span>
+                <label class="radio-container">
+                  pepper_dcm_bringup
+                  <input type="radio" id="pepper_dcm_bringup" name="driver" value="pepper_dcm_bringup" required>
+                  <span class="radiomark"></span>
+                </label>
+                <label class="radio-container">
+                  naoqi_driver
+                  <input type="radio" id="naoqi_driver" name="driver" value="naoqi_driver" required>
+                  <span class="radiomark"></span>
+                </label>
+              </div>
+
+              <div class="radio-group">
+                <span class="radio-label">Choose Language:</span>
+                <label class="radio-container">
+                    Français
+                    <input type="radio" id="fr_language" name="language" value="fr" required>
+                    <span class="radiomark"></span>
+                </label>
+                <label class="radio-container">
+                    English
+                    <input type="radio" id="en_language" name="language" value="en" required>
+                    <span class="radiomark"></span>
+                </label>
+              </div>
+              
+              
+              
             <input type="submit" value="Submit">
         </div>
     </form>

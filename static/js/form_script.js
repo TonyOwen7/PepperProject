@@ -1,12 +1,21 @@
-document.getElementById('pepperForm').addEventListener('submit', function(e) {
-    e.preventDefault();  // Empêcher la soumission classique du formulaire
-
-    console.log('Formulaire soumis');  // Vérifier si la soumission fonctionne
-
-    const robotIp = document.getElementById('robot_ip').value;
-    const networkInterface = document.getElementById('network_interface').value;
-
-    console.log('Données du robot:', { robotIp, networkInterface });  // Vérifier les données récupérées
+document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("pepperForm");
+    
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Empêche l'envoi du formulaire classique
+    
+            // Récupérer les valeurs du formulaire
+            const formData = new FormData(form);
+            const robotIp = formData.get("robot_ip");
+            const networkInterface = formData.get("network_interface");
+            const driver = formData.get("driver");
+            const language = formData.get("language");
+    
+            // Affichez les valeurs pour vérification (console log)
+            console.log("Robot IP:", robotIp);
+            console.log("Network Interface:", networkInterface);
+            console.log("Driver:", driver);
+            console.log("Language:", language);
 
     // Envoyer les données au serveur Flask
     fetch('/submit', {
@@ -16,7 +25,9 @@ document.getElementById('pepperForm').addEventListener('submit', function(e) {
         },
         body: JSON.stringify({
             robot_ip: robotIp,
-            network_interface: networkInterface
+            network_interface: networkInterface,
+            driver: driver,
+            language: language
         })
     })
     .then(response => {
@@ -34,5 +45,7 @@ document.getElementById('pepperForm').addEventListener('submit', function(e) {
     })
     .catch(error => {
         console.error('Erreur:', error);  // Gérer les erreurs
-    });
-});
+        });
+    })
+})
+

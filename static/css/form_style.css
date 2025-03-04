@@ -31,7 +31,8 @@ form{
     display: flex;
     flex-direction: column;
     background-color: transparent;
-    padding: 50px 30px;
+    padding: 50px 50px;
+    padding-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(30px);
@@ -42,6 +43,8 @@ form{
     display: flex;
     flex-direction: column;
     padding: 50px 0;
+    padding-bottom: 0px;
+    height: 650px;
 }
 
 .input-box label{
@@ -95,8 +98,174 @@ input[type="submit"]{
     transition: all 0.3s;
 }
 
+/* Style pour le groupe de cases à cocher */
+.checkbox-group {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.checkbox-label {
+    font-weight: bold;
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+/* Style pour chaque case à cocher */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    font-weight: 700;
+    color: #000;
+}
+
+/* La case à cocher cachée */
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* La case visuelle */
+.checkbox-container .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: 2px solid #000;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+/* Effet de survol */
+.checkbox-container:hover .checkmark {
+    border-color: aqua;
+}
+
+/* Style lorsque la case est cochée */
+.checkbox-container input:checked ~ .checkmark {
+    background-color: aqua;
+    border-color: aqua;
+}
+
+/* Le symbole de la case cochée */
+.checkbox-container .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Personnalisation du symbole de la coche */
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+/* Groupe des boutons radio */
+.radio-group {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.radio-label {
+    font-weight: bold;
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+/* Chaque bouton radio */
+.radio-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    font-weight: 700;
+    color: #000;
+}
+
+/* Le bouton radio caché */
+.radio-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* La partie visible du bouton radio */
+.radio-container .radiomark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: 2px solid #000;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+/* Effet de survol */
+.radio-container:hover .radiomark {
+    border-color: aqua;
+}
+
+/* Lorsque le bouton radio est sélectionné */
+.radio-container input:checked ~ .radiomark {
+    background-color: aqua;
+    border-color: aqua;
+}
+
+/* La marque intérieure (cercle) */
+.radio-container .radiomark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.radio-container input:checked ~ .radiomark:after {
+    display: block;
+}
+
+/* Style du cercle intérieur */
+.radio-container .radiomark:after {
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+}
+
+
+
 input[type="submit"]:hover{
+    margin-top: 30px;
+    position: absolute;
+    bottom: 0;
     color: white;
     box-shadow: 0 0 20px rgba(0, 255, 255,0.9);
 
 }
+

@@ -6,81 +6,73 @@
     <title>Control your Pepper - Robot Control</title>
     <link rel="icon" href="../static/images/Pepper.png" type="image/png">
     <link rel="stylesheet" href="../static/css/control_style.css">
+    
 </head>
 <body>
     <div class="bg_img"></div>
     <div class="control">
         <h1>Control Your Pepper Robot</h1>
 
-        <!-- Toggle for Wiki Mode -->
-        <label class="switch">
-            <input type="checkbox" id="wiki-toggle">
-            <span class="slider round"></span>
-        </label>
-        <p>Wiki Pepper Mode</p>
-
-        <!-- Joystick Interface with Updated Lateral Movements -->
         <div class="joystick-container">
             <div class="joystick-row">
-                <button onclick="sendCommand('Avancer vers la gauche')" class="joystick-button">↖</button>
-                <button onclick="sendCommand('Avancer')" class="joystick-button">↑</button>
-                <button onclick="sendCommand('Avancer vers la droite')" class="joystick-button">↗</button>
+                <button onclick="sendMove('avancer vers la gauche')" class="joystick-button">↖</button>
+                <button onclick="sendMove('avancer')" class="joystick-button">↑</button>
+                <button onclick="sendMove('avancer vers la droite')" class="joystick-button">↗</button>
             </div>
             <div class="joystick-row">
-                <button onclick="sendCommand('Aller à gauche')" class="joystick-button">←</button>
-                <button onclick="sendCommand('stop')" class="joystick-button">⏹️</button>
-                <button onclick="sendCommand('Aller à droite')" class="joystick-button">→</button>
+                <button onclick="sendMove('aller à gauche')" class="joystick-button">←</button>
+                <button onclick="sendMove('stop')" class="joystick-button">⏹️</button>
+                <button onclick="sendMove('aller à droite')" class="joystick-button">→</button>
             </div>
             <div class="joystick-row">
-                <button onclick="sendCommand('Reculer vers la gauche')" class="joystick-button">↙</button>
-                <button onclick="sendCommand('Reculer')" class="joystick-button">↓</button>
-                <button onclick="sendCommand('Reculer vers la droite')" class="joystick-button">↘</button>
+                <button onclick="sendMove('reculer vers la gauche')" class="joystick-button">↙</button>
+                <button onclick="sendMove('reculer')" class="joystick-button">↓</button>
+                <button onclick="sendMove('reculer vers la droite')" class="joystick-button">↘</button>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button onclick="sendCommand('Calibrer caméra')" class="action-button">📷</button>
-            <button onclick="sendCommand('Tourner sur soi-même vers la gauche')" class="action-button">↺</button>
-            <button onclick="sendCommand('Tourner sur soi-même vers la droite')" class="action-button">↻</button>
-            <button onclick="sendCommand('Tour complet vers la gauche')" class="action-button">↺ 360°</button>
-            <button onclick="sendCommand('Tour complet vers la droite')" class="action-button">↻ 360°</button>
+            <button onclick="sendMove('tourner à gauche')" class="action-button">↺</button>
+            <button onclick="sendMove('tourner à droite')" class="action-button">↻</button>
+            <button onclick="sendMove('demi-tour gauche')" class="action-button">↺ 180°</button>
+            <button onclick="sendMove('demi-tour droit')" class="action-button">↻ 180°</button>
         </div>
     </div>
-    
-    <script src="../static/js/control_script.js"></script>
-    <script>
-        // Toggle Wiki Mode
-        document.getElementById("wiki-toggle").addEventListener("change", function() {
-            const isEnabled = this.checked;
-            fetch("/set_wiki_mode", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ wiki_mode: isEnabled })
-            }).then(response => {
-                if (response.ok) {
-                    console.log(`Wiki Pepper Mode ${isEnabled ? 'enabled' : 'disabled'}`);
-                }
-            }).catch(error => console.error('Error:', error));
-        });
 
-        // Function to send command to Flask backend
-        function sendCommand(commandName) {
-            fetch("/command", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ command: commandName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                } else if (data.error) {
-                    alert(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <!-- Input Zone Trigger -->
+    <div class="text-input-container">
+        <button class="text-input-icon" onclick="toggleInputZone()">💬</button>
+           <div class="input-zone hidden">
+               <textarea 
+                   id="question-input" 
+                   class="" 
+                   placeholder="What would you like Pepper to say?"
+                   rows="3"
+               ></textarea>
+               <button class="send-question" onclick="sendQuestion()">Envoyer</button>
+           </div>
+       </div>
+
+    <div class="destination-container">
+        <div class="destination-title">Destinations</div>
+        <input list="destinations" id="destination-input" placeholder="Choisissez une destination..." class="input">
+        <datalist id="destinations">
+            <option value="Accueil"></option>
+            <option value="Bureau des enseignants"></option>
+            <option value="Classe 1"></option>
+            <option value="Classe 2"></option>
+            <option value="Classe 3"></option>
+            <option value="Toilette"></option>
+            <option value="Escalier"></option>
+            <option value="Bureau du directeur"></option>
+            <option value="Salle de réunion"></option>
+            <option value="Cafétéria"></option>
+        </datalist> 
+        <button class="destination-button" onclick="sendDestination()">Envoyer</button>
+      
+    </div>
+    <script src="../static/js/control_script.js"></script>
+
 </body>
 </html>
