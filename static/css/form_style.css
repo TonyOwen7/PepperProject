@@ -7,238 +7,150 @@
     font-family: "Poppins";
 }
 
-body{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #e5e5e5;
+    color: #333;
     min-height: 100vh;
-    background-color: #f0f0f0;
-}
-
-.bg_img{
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-image: url("../images/Pep2.0.png");
-    background-repeat:no-repeat;
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.95);
-}
-
-form{
-    position: relative;
     display: flex;
     flex-direction: column;
-    background-color: transparent;
-    padding: 50px 50px;
-    padding-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(30px);
 }
 
-.inputs{
-    position: relative;
+.header {
+    background: linear-gradient(90deg, #0078d4, #2b88d8);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.container {
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    padding: 50px 0;
-    padding-bottom: 0px;
-    height: 650px;
-}
-
-.input-box label{
-    position: absolute;
-    font-weight: bolder;
-    left: 0;
-    top: 0;
-    font-size: 18px;
-    transform: translateY(-50%);
-    pointer-events: none;
-    transition: .5s;
-}
-
-.inputs input{
-    margin-bottom: 30px;
-    border: none;
-    border-bottom: 1px solid #000;
-    height: 25px;
-    background-color: transparent;
-    outline: none;
-    width: 100%;
-}
-
-.inputs input{
-    font-weight: 700;
-}
-
-.inputs .input-box{
-    margin: 30px 0;
-    position: relative;
-    width: 100%;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label{
-    top: -20px;
-}
-
-input[type="submit"]{
-    cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    align-self: center;
-    height: 35px;
-    width: 120px;
-    font-weight: bolder;
-    background: linear-gradient(180deg, aqua, rgb(0, 201, 201), rgb(0, 140, 140));
-    box-shadow: 0 0 10px rgba(0, 255, 255,0.9);
-    border: none;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-
-/* Style pour le groupe de cases à cocher */
-.checkbox-group {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.checkbox-label {
-    font-weight: bold;
-    font-size: 18px;
-    color: #000;
-    margin-bottom: 10px;
-}
-
-/* Style pour chaque case à cocher */
-.checkbox-container {
-    display: flex;
+    justify-content: center;
     align-items: center;
+    padding: 40px 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+#pepperForm {
+    width: 100%;
+}
+
+#pepperForm h2 {
+    color: #0078d4;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.input-box {
     position: relative;
-    padding-left: 35px;
-    cursor: pointer;
+    margin-bottom: 25px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 15px;
+    background: #f5f9ff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    color: #333;
     font-size: 16px;
-    user-select: none;
-    font-weight: 700;
-    color: #000;
-}
-
-/* La case à cocher cachée */
-.checkbox-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-/* La case visuelle */
-.checkbox-container .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: transparent;
-    border: 2px solid #000;
-    border-radius: 4px;
     transition: all 0.3s;
 }
 
-/* Effet de survol */
-.checkbox-container:hover .checkmark {
-    border-color: aqua;
+.input-box input:focus {
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+    outline: none;
 }
 
-/* Style lorsque la case est cochée */
-.checkbox-container input:checked ~ .checkmark {
-    background-color: aqua;
-    border-color: aqua;
-}
-
-/* Le symbole de la case cochée */
-.checkbox-container .checkmark:after {
-    content: "";
+.input-box label {
     position: absolute;
-    display: none;
+    background-color: #f5f9ff;
+    left: 10px;
+    top: -10px;
+    padding: 2px 7px;
+    color: #333;
+    font-size: 14px;
+    border-radius: 5px;
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
-    display: block;
-}
-
-/* Personnalisation du symbole de la coche */
-.checkbox-container .checkmark:after {
-    left: 6px;
-    top: 2px;
-    width: 6px;
-    height: 12px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-/* Groupe des boutons radio */
 .radio-group {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    margin: 25px 0;
 }
 
 .radio-label {
-    font-weight: bold;
-    font-size: 18px;
-    color: #000;
+    display: block;
+    color: #333;
+    font-weight: 500;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
-/* Chaque bouton radio */
-.radio-container {
+.radio-options {
     display: flex;
-    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.radio-container {
     position: relative;
-    padding-left: 35px;
+    padding-left: 30px;
     cursor: pointer;
     font-size: 16px;
     user-select: none;
-    font-weight: 700;
-    color: #000;
+    color: #333;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 
-/* Le bouton radio caché */
 .radio-container input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
 }
 
-/* La partie visible du bouton radio */
-.radio-container .radiomark {
+.radiomark {
     position: absolute;
     top: 0;
     left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: transparent;
-    border: 2px solid #000;
+    height: 18px;
+    width: 18px;
+    background-color: #f5f9ff;
+    border: 2px solid #aaa;
     border-radius: 50%;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
-/* Effet de survol */
 .radio-container:hover .radiomark {
-    border-color: aqua;
+    border-color: #0078d4;
 }
 
-/* Lorsque le bouton radio est sélectionné */
 .radio-container input:checked ~ .radiomark {
-    background-color: aqua;
-    border-color: aqua;
+    background-color: #f5f9ff;
+    border-color: #0078d4;
 }
 
-/* La marque intérieure (cercle) */
-.radio-container .radiomark:after {
+.radiomark:after {
     content: "";
     position: absolute;
     display: none;
@@ -248,24 +160,83 @@ input[type="submit"]{
     display: block;
 }
 
-/* Style du cercle intérieur */
 .radio-container .radiomark:after {
-    top: 5px;
-    left: 5px;
-    width: 10px;
-    height: 10px;
+    top: 3px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: white;
+    background: #0078d4;
 }
 
-
-
-input[type="submit"]:hover{
-    margin-top: 30px;
-    position: absolute;
-    bottom: 0;
+.submit-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    background: #0078d4;
     color: white;
-    box-shadow: 0 0 20px rgba(0, 255, 255,0.9);
-
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
+.submit-btn:hover {
+    background: #005a9e;
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+}
+
+.footer {
+    background: linear-gradient(90deg, #f0f5ff, #e6edff);
+    padding: 20px 0;
+    text-align: center;
+    color: #5a5a5a;
+    font-size: 14px;
+    border-top: 1px solid #e0e8f9;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+    margin-top: 40px;
+}
+
+.footer-content {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-logo {
+    font-weight: 600;
+    color: #0078d4;
+    margin-right: 10px;
+}
+
+.footer-divider {
+    margin: 0 10px;
+    color: #bbb;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px 15px;
+    }
+    
+    .radio-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+    }
+}
