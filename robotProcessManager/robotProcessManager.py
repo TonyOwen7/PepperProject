@@ -6,14 +6,6 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from collections import deque
 
-import sys
-import os
-
-module_path = os.path.join(os.path.dirname(__file__), '../move')
-sys.path.append(module_path)
-
-from move import execute_move
-
 class RobotProcessManager:
     def __init__(self):
         self.roscore_process = None

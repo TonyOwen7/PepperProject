@@ -12,8 +12,8 @@ location_queries = {
             "classe 3": (2, 3),
             "toilette": (2, 5),
             "escalier": (4, 0),
-            "bureau des enseignants": (4, 5)
-            "Accueil" : (0 ,0)
+            "bureau des enseignants": (4, 5),
+            "Accueil" : (0, 0)
         }
 
 DIRECTIONS = {

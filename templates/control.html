@@ -43,20 +43,27 @@
     <!-- Input Zone Trigger -->
     <div class="text-input-container">
         <button class="text-input-icon" onclick="toggleInputZone()">💬</button>
-           <div class="input-zone hidden">
-               <textarea 
-                   id="question-input" 
-                   class="" 
-                   placeholder="What would you like Pepper to say?"
-                   rows="3"
-               ></textarea>
-               <button class="send-question" onclick="sendQuestion()">Envoyer</button>
-           </div>
+        <div class="input-zone hidden">
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('question')">Ask a question</button>
+                <button class="tab-button" onclick="switchTab('speak')">Make Pepper talk</button>
+            </div>
+
+            <div class="tab-content" id="question-tab">
+                <textarea id="question-input" placeholder="Ask Pepper a question..." rows="3"></textarea>
+                <button class="send-question">Send</button>
+            </div>
+
+            <div class="tab-content hidden" id="speak-tab">
+                <textarea id="speech-input" placeholder="Write what Pepper will say..." rows="3"></textarea>
+                <button class="send-speech">Send</button>
+            </div>
+        </div>
        </div>
 
     <div class="destination-container">
         <div class="destination-title">Destinations</div>
-        <input list="destinations" id="destination-input" placeholder="Choisissez une destination..." class="input">
+        <input list="destinations" id="destination-input" placeholder="Choose your destination..." class="input">
         <datalist id="destinations">
             <option value="Accueil"></option>
             <option value="Bureau des enseignants"></option>
@@ -66,10 +73,8 @@
             <option value="Toilette"></option>
             <option value="Escalier"></option>
             <option value="Bureau du directeur"></option>
-            <option value="Salle de réunion"></option>
-            <option value="Cafétéria"></option>
         </datalist> 
-        <button class="destination-button" onclick="sendDestination()">Envoyer</button>
+        <button class="destination-button" onclick="sendDestination()">Send</button>
       
     </div>
     <script src="../static/js/control_script.js"></script>

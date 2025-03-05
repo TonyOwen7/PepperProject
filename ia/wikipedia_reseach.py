@@ -1,7 +1,7 @@
 from research import *
 
-def rechercher_wikipedia(question, langue="fr"):
-    url = f"https://{langue}.wikipedia.org/w/api.php"
+def rechercher_wikipedia(question, language="fr"):
+    url = f"https://{language}.wikipedia.org/w/api.php"
     params = {
         "action": "query",
         "list": "search",
@@ -16,7 +16,7 @@ def rechercher_wikipedia(question, langue="fr"):
 
         for result in data["query"]["search"]:
             page_id = result["pageid"]
-            content_url = f"https://{langue}.wikipedia.org/w/api.php?action=query&prop=extracts&pageids={page_id}&exintro=&format=json"
+            content_url = f"https://{language}.wikipedia.org/w/api.php?action=query&prop=extracts&pageids={page_id}&exintro=&format=json"
             content_response = requests.get(content_url)
             content_response.raise_for_status()
             content_data = content_response.json()

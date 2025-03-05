@@ -153,6 +153,7 @@ input:checked + .slider:before {
     transform: scale(1.1);
 }
 
+/* Input Zone */
 .input-zone {
     display: none;
     flex-direction: column;
@@ -163,9 +164,40 @@ input:checked + .slider:before {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    max-width: 500px;
 }
 
-.input-zone textarea {
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    background-color: #5d9cec;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background-color: #4a8ad4;
+}
+
+.tab-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.tab-content textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -179,35 +211,20 @@ input:checked + .slider:before {
     outline: none;
 }
 
-.input-zone textarea:focus {
+.tab-content textarea:focus {
     border-color: #4a8ad4;
     box-shadow: 0 0 10px rgba(93, 156, 236, 0.2);
 }
 
-.input-zone textarea::placeholder {
-    color: #888;
+.tab-content textarea::placeholder {
+    color: #333;
     opacity: 0.7;
 }
 
-.send-question {
-    background-color: #5d9cec;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-}
 
-.send-question:hover {
-    background-color: #4a8ad4;
-    transform: scale(1.05);
-}
-
-/* Input Zone Visibility */
+/* Hidden Elements */
 .hidden {
+    display: none;
     opacity: 0;
     pointer-events: none;
     transform: scale(0.8);
@@ -266,18 +283,20 @@ input:checked + .slider:before {
 }
 
 #destination-input::placeholder {
-    color: #888;
+    color: #333;
     opacity: 0.7;
 }
 
-.destination-button {
+.destination-button,
+button.send-question, 
+button.send-speech {
     margin: 5px 10px;
     background-color: #5d9cec;
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 12px 25px;
-    font-size: 1.1rem;
+    padding: 10px 25px;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
@@ -285,13 +304,17 @@ input:checked + .slider:before {
     font-weight: 500;
 }
 
-.destination-button:hover {
+.destination-button:hover,
+button.send-question:hover, 
+button.send-speech:hover {
     background-color: #4a8ad4;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.destination-button:active {
+.destination-button:active,
+button.send-question:active, 
+button.send-speech:active{
     transform: scale(0.95);
 }
 

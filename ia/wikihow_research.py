@@ -1,9 +1,10 @@
 from research import *
 
 # Search WikiHow
-def rechercher_wikihow(question):
+def rechercher_wikihow(question, language="fr"):
     try:
-        search_url = f"https://fr.wikihow.com/wikiHowTo?search={question}"
+
+        search_url = f"https://{language}.wikihow.com/wikiHowTo?search={question}"
         response = requests.get(search_url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')

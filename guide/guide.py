@@ -1,8 +1,15 @@
 import sys
 import os
 
-module_path = os.path.join(os.path.dirname(__file__), '../move')
-sys.path.append(module_path)
+move_path = os.path.join(os.path.dirname(__file__), '../move')
+mymap_path = os.path.join(os.path.dirname(__file__), '../mymap')
+shortest_path_path = os.path.join(os.path.dirname(__file__), '../shortest_path')
+search_pattern_path = os.path.join(os.path.dirname(__file__), '../search_pattern')
+
+sys.path.append(move_path)
+sys.path.append(mymap_path)
+sys.path.append(shortest_path_path)
+sys.path.append(search_pattern_path)
 
 from move import *
 from mymap import university_matrix, DIRECTIONS, location_queries, pepper_direction, pepper_position
