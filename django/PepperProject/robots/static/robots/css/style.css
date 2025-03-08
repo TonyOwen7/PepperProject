@@ -180,6 +180,8 @@ form {
     outline: none;
 }
 
+
+
 /* Style for the robot list container */
 .robot-list {
     list-style: none;
@@ -223,6 +225,22 @@ form {
 
 .delete-btn:hover {
     background: #38a07d;
+}
+
+/* Style for the Edit button */
+.edit-btn {
+    background: #25f312; /* Orange color for the Edit button */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.3s;
+    margin-left: 10px;
+}
+
+.edit-btn:hover {
+    background: #28bb1b;
+    transform: scale(1.05);
 }
 
 /* Style for each robot item */

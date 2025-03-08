@@ -42,7 +42,7 @@ document.querySelector('.destination-button').addEventListener('click', function
 
 
 function sendMove(move) {
-    fetch('/handle_move', {
+    fetch('/move', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ function sendQuestion() {
     const input = document.getElementById('question-input');
     const text = input.value.trim();
     if (text) {
-        fetch('/handle_question', {
+        fetch('/question', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ function sendSpeech() {
     const input = document.getElementById('speech-input');
     const text = input.value.trim();
     if (text) {
-        fetch('/handle_speech', {
+        fetch('/speech', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ function sendSpeech() {
 
 
 function sendDestination(destination) {
-    fetch('/handle_guiding', {
+    fetch('/destination', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

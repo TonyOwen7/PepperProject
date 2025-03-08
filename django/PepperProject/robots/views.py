@@ -24,6 +24,23 @@ def create_robot(request):
 
 
 @login_required
+def edit_robot(request, robot_id):
+    # Fetch the robot and ensure it belongs to the logged-in user
+    robot = get_object_or_404(Robot, id=robot_id, user=request.user)
+
+    if request.method == 'POST':
+        # Populate the form with the submitted data and the existing robot instance
+        form = RobotForm(request.POST, instance=robot)
+        if form.is_valid():
+            form.save()  # Save the updated robot data
+            return redirect('user_robots')  # Redirect to the user's robots page
+    else:
+        # Populate the form with the existing robot data
+        form = RobotForm(instance=robot)
+
+    return render(request, 'robots/edit_robot.html', {'form': form, 'robot': robot})
+
+@login_required
 def delete_robot(request, robot_id):
     # Fetch the robot and ensure it belongs to the logged-in user
     robot = get_object_or_404(Robot, id=robot_id, user=request.user)
