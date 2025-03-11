@@ -1,0 +1,50 @@
+{% extends 'robots/base.html' %}
+{% load static %}
+
+{% block title %}Map Editor - Pepper Control{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'map/css/map_editor.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="width: min-content;margin: auto;">
+    <h1>Map Editor</h1>
+    <div id="map" data-matrix="{{ map.matrix }}" data-id = "{{map.id}}"></div>
+    <div class="color-legend">
+      <div class="legend-item" data-value="0">
+        <div class="color-box empty"></div>
+        <span>Empty</span>
+      </div>
+      <div class="legend-item" data-value="1">
+        <div class="color-box obstacle"></div>
+        <span>Obstacle</span>
+      </div>
+      <div class="legend-item" data-value="2">
+        <div class="color-box room"></div>
+        <span>Room</span>
+      </div>
+    </div>
+    <div class="controls">
+      <button onclick="addRow()">Add Row</button>
+      <button onclick="addColumn()">Add Column</button>
+      <button onclick="removeRow()">Remove Row</button>
+      <button onclick="removeColumn()">Remove Column</button>
+    </div>
+    <form id="save-map-form" method="post" action="{% url 'save-map' %}" style="margin-top: 40px;">
+      {% csrf_token %}
+      <input type="hidden" id="map-matrix" name="matrix">
+      <input type="hidden" id="map-id" name="map_id" value="{{ map.id }}">
+      <div class="form-group">
+        <label for="map-name">Map Name:</label>
+        <input type="text" id="map-name" name="name" value="{{ map.name }}" required>
+      </div>
+      <button type="submit" class="submit-btn">Save Map</button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'map/js/script.js' %}"></script>
+  
+{% endblock %}

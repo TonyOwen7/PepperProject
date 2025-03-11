@@ -17,7 +17,9 @@
         <nav class="header-nav">
             {% if user.is_authenticated %}
                 <a href="{% url 'robot_configuration' %}" class="nav-link">Robot configuration</a>
-                <a href="{% url 'user_robots' %}" class="nav-link">Your Robots</a>
+                <a href="{% url 'edit_map' %}" class="nav-link">create map</a>
+                <a href="{% url 'user_maps' %}" class="nav-link">my maps</a>
+                <a href="{% url 'user_robots' %}" class="nav-link">my robots</a>
                 <a href="{% url 'create_robot' %}" class="nav-link">Add Robot</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
             {% else %}
@@ -45,7 +47,7 @@
         <div class="footer-content">
             <span class="footer-logo">Pepper Control</span>
             <span class="footer-divider">|</span>
-            <span>&copy; 2025 High-Tech Interface</span>
+            <span>&copy; 2025 High-Tech Interface MBTO</span>
         </div>
     </footer>
 

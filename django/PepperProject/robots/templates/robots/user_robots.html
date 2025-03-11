@@ -1,8 +1,8 @@
 {% extends 'robots/base.html' %}
-{% block title %}Your Robots - Pepper Control{% endblock %}
+{% block title %}my robots - Pepper Control{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Your Robots</h1>
+    <h1>my robots</h1>
 
     {% if robots %}
         <ul class="robot-list">
@@ -29,8 +29,10 @@
                 </li>
             {% endfor %}
         </ul>
+        <p style="text-align: center;"><a href="{% url 'create_robot' %}">Add a new robot</a>.</p>
+
     {% else %}
-        <p>You have no robots yet. <a href="{% url 'create_robot' %}">Add a new robot</a>.</p>
+        <p style="text-align: center;">You have no robots yet. <a href="{% url 'create_robot' %}">Add a new robot</a>.</p>
     {% endif %}
 </div>
 {% endblock %}

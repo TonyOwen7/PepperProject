@@ -1,0 +1,213 @@
+import os
+import json
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from .models import Map
+
+
+@login_required
+def set_current_map(request, map_id):
+    """
+    Sets the selected map as the current map for the user.
+    """
+    if request.method == "POST":
+        user_maps = Map.objects.filter(user=request.user)
+
+        # Unset current flag for all maps
+        user_maps.update(is_current=False)
+
+        # Set the selected map as current
+        selected_map = get_object_or_404(Map, id=map_id, user=request.user)
+        selected_map.is_current = True
+        selected_map.save()
+
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+def read_map(file_path):
+    """
+    Reads a matrix from a file.
+    :param file_path: The file path.
+    :return: A dictionary containing rows, cols, and matrix.
+    """
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.read().strip().split('\n')
+            rows, cols = map(int, lines[0].split())
+            matrix = [list(map(int, line.split())) for line in lines[1:]]
+            
+            if len(matrix) != rows or any(len(row) != cols for row in matrix):
+                raise ValueError("Matrix dimensions do not match the specified size.")
+            
+            return {"rows": rows, "cols": cols, "matrix": matrix}
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+
+def write_matrix_to_file(file_path, matrix):
+    """
+    Writes a matrix to a file.
+    :param file_path: The file path.
+    :param matrix: The matrix to save.
+    """
+    try:
+        rows = len(matrix)
+        cols = len(matrix[0])
+        content = f"{rows} {cols}\n" + '\n'.join(' '.join(map(str, row)) for row in matrix)
+        with open(file_path, 'w') as file:
+            file.write(content)
+        print(f"File successfully created at: {file_path}")
+    except Exception as e:
+        print(f"Error while creating the file: {e}")
+
+
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+import os
+from .models import Map
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+import os
+from .models import Map
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+import os
+from .models import Map
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+import os
+from .models import Map
+
+@login_required
+@csrf_exempt  # Use only if CSRF tokens cannot be used
+def save_map(request):
+    """
+    API to save the matrix data for a specific map.
+    If no map_id is provided, a new map is created.
+    """
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method. POST required.'}, status=405)
+
+    try:
+        # Parse the request body (JSON data)
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+            matrix = data.get('matrix')
+            map_id = data.get('id')
+            map_name = data.get('name')
+        else:
+            # Parse form data
+            matrix = json.loads(request.POST.get('matrix', '[]'))
+            map_id = request.POST.get('map_id')
+            map_name = request.POST.get('name')
+
+        # Validate required fields
+        if not matrix or not map_id or not map_name:
+            return JsonResponse({'error': 'Matrix data, map ID, or map name is missing.'}, status=400)
+
+        # Fetch the existing map
+        map_instance = get_object_or_404(Map, id=map_id, user=request.user)
+
+        # Update the matrix and map name
+        map_instance.matrix = matrix
+        map_instance.name = map_name
+        map_instance.save()
+
+        # Save the matrix to a text file
+        user_folder = os.path.join("assets", f"{request.user.username}")
+        os.makedirs(user_folder, exist_ok=True)
+        file_path = os.path.join(user_folder, f"{map_instance.name}.txt")
+        write_matrix_to_file(file_path, matrix)
+
+        # Redirect to the user_maps page
+        return redirect("user_maps")
+
+    except json.JSONDecodeError as e:
+        return JsonResponse({'error': f'JSON parsing failed: {str(e)}'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
+        
+def edit_map(request, map_name=None, map_id=None):
+    """
+    Renders the map editor for creating or editing a map.
+    If map_id is provided, loads the existing map; otherwise, creates a new one.
+    """
+    if map_id:
+        # Load existing map
+        map_instance = get_object_or_404(Map, id=map_id, user=request.user)
+        matrix = map_instance.matrix
+    else:
+        # Create a new map
+        default_name = f"Map {Map.objects.filter(user=request.user).count() + 1}"  # Generate a default name
+        matrix = [[0, 0, 0, 0] for _ in range(4)]  # Default 4x4 empty matrix
+
+        # Create the new map instance
+        map_instance = Map.objects.create(
+            user=request.user,
+            name=default_name,
+            matrix=matrix,
+            is_default=False,
+            is_current=False
+        )
+
+        # Save the matrix to a text file
+        user_folder = os.path.join("assets", f"{request.user.id}")
+        os.makedirs(user_folder, exist_ok=True)
+        file_path = os.path.join(user_folder, f"map_{map_instance.id}.txt")
+        write_matrix_to_file(file_path, matrix)
+
+    return render(request, 'map/map_editor.html', {'id': map_instance.id, 'map' : map_instance})
+
+@login_required
+def delete_map(request, map_id):
+    """
+    Deletes a map and its associated TXT file.
+
+    """
+    map_instance = get_object_or_404(Map, id=map_id, user=request.user)
+
+    file_path = f"assets/{request.user.username}/{map_instance.name}.txt"
+
+    if os.path.exists(file_path):
+        os.remove(file_path)  # Delete the TXT file
+
+    map_instance.delete()  # Delete from database
+
+    return redirect('user_maps')
+
+
+@login_required
+def user_maps(request):
+    """
+    Displays all maps associated with the logged-in user.
+    """
+    maps = Map.objects.filter(user=request.user)
+    return render(request, 'map/user_maps.html', {'maps': maps})
+
+
+@csrf_exempt
+@login_required
+def get_map(request, map_id):
+    """
+    API to fetch the matrix data for a specific map.
+    """
+    map_instance = get_object_or_404(Map, id=map_id, user=request.user)
+    return JsonResponse({'matrix': map_instance.matrix})

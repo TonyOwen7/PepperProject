@@ -369,7 +369,6 @@ button.send-speech {
 button.send-question:hover, 
 button.send-speech:hover {
     background-color: #4a8ad4;
-    transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

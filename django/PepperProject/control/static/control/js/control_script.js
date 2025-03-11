@@ -24,12 +24,6 @@ document.getElementById('speech-input').addEventListener('keypress', function(ev
     }
 });
 
-const destinationButtons = document.querySelectorAll('.destination-button');
-destinationButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        sendDestination(this.textContent);
-    });
-});
 
 document.querySelector('.destination-button').addEventListener('click', function() {
     const destination = document.getElementById('destination-input').value.trim();
@@ -42,7 +36,7 @@ document.querySelector('.destination-button').addEventListener('click', function
 
 
 function sendMove(move) {
-    fetch('/move', {
+    fetch('/move/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -101,7 +95,7 @@ function sendSpeech() {
     const input = document.getElementById('speech-input');
     const text = input.value.trim();
     if (text) {
-        fetch('/speech', {
+        fetch('/speech/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +118,7 @@ function sendSpeech() {
 
 
 function sendDestination(destination) {
-    fetch('/destination', {
+    fetch('/destination/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -221,10 +221,14 @@ form {
     text-decoration: none;
     transition: background 0.3s;
     margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .delete-btn:hover {
     background: #38a07d;
+
 }
 
 /* Style for the Edit button */
@@ -236,11 +240,13 @@ form {
     text-decoration: none;
     transition: background 0.3s, transform 0.3s;
     margin-left: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .edit-btn:hover {
     background: #28bb1b;
-    transform: scale(1.05);
 }
 
 /* Style for each robot item */
@@ -249,7 +255,7 @@ form {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
-    width: 300px;
+    width: max-content;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
@@ -291,6 +297,7 @@ form {
 
 .control-btn:hover {
     background-color: #0056b3; /* Darker blue on hover */
+
 }
 
 

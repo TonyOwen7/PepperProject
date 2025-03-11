@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'control',
     'users',
     'robots',
+    'map',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+        'corsheaders.middleware.CorsMiddleware',  
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -122,16 +125,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-# settings.py
+import os
 
+# URL pour accéder aux fichiers statiques
 STATIC_URL = '/static/'
 
+# Dossier où Django va collecter les fichiers statiques (pour collectstatic)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Dossier où Django va chercher les fichiers statiques pendant le dev
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    # os.path.join(BASE_DIR, 'users/static'),
-    # os.path.join(BASE_DIR, 'robots/static'),
+    os.path.join(BASE_DIR, 'map/static'),
+    os.path.join(BASE_DIR, 'users/static'),
+    os.path.join(BASE_DIR, 'control/static'),
+    os.path.join(BASE_DIR, 'robots/static'),
+
 ]
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
