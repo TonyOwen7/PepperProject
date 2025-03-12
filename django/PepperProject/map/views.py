@@ -96,13 +96,16 @@ import json
 import os
 from .models import Map
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+import os
+
 @login_required
-@csrf_exempt  # Use only if CSRF tokens cannot be used
+@csrf_exempt
 def save_map(request):
-    """
-    API to save the matrix data for a specific map.
-    If no map_id is provided, a new map is created.
-    """
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method. POST required.'}, status=405)
 
@@ -111,11 +114,13 @@ def save_map(request):
         if request.content_type == 'application/json':
             data = json.loads(request.body)
             matrix = data.get('matrix')
+            rooms = data.get('rooms')  # Get the rooms dictionary
             map_id = data.get('id')
             map_name = data.get('name')
         else:
             # Parse form data
             matrix = json.loads(request.POST.get('matrix', '[]'))
+            rooms = json.loads(request.POST.get('rooms', '{}'))  # Get the rooms dictionary
             map_id = request.POST.get('map_id')
             map_name = request.POST.get('name')
 
@@ -126,8 +131,9 @@ def save_map(request):
         # Fetch the existing map
         map_instance = get_object_or_404(Map, id=map_id, user=request.user)
 
-        # Update the matrix and map name
+        # Update the matrix, rooms, and map name
         map_instance.matrix = matrix
+        map_instance.rooms = rooms
         map_instance.name = map_name
         map_instance.save()
 
@@ -144,7 +150,7 @@ def save_map(request):
         return JsonResponse({'error': f'JSON parsing failed: {str(e)}'}, status=400)
     except Exception as e:
         return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
-        
+
 def edit_map(request, map_name=None, map_id=None):
     """
     Renders the map editor for creating or editing a map.
@@ -164,6 +170,7 @@ def edit_map(request, map_name=None, map_id=None):
             user=request.user,
             name=default_name,
             matrix=matrix,
+            rooms = {},
             is_default=False,
             is_current=False
         )
@@ -174,7 +181,7 @@ def edit_map(request, map_name=None, map_id=None):
         file_path = os.path.join(user_folder, f"map_{map_instance.id}.txt")
         write_matrix_to_file(file_path, matrix)
 
-    return render(request, 'map/map_editor.html', {'id': map_instance.id, 'map' : map_instance})
+    return render(request, 'map/map_editor.html', { 'map' : map_instance})
 
 @login_required
 def delete_map(request, map_id):

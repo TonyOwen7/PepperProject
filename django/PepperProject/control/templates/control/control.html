@@ -86,15 +86,11 @@
         <div class="destination-title">Destinations</div>
         <input list="destinations" id="destination-input" placeholder="Choose your destination..." class="input">
         <datalist id="destinations">
-            <option value="Accueil"></option>
-            <option value="Bureau des enseignants"></option>
-            <option value="Classe 1"></option>
-            <option value="Classe 2"></option>
-            <option value="Classe 3"></option>
-            <option value="Toilette"></option>
-            <option value="Escalier"></option>
-            <option value="Bureau du directeur"></option>
-        </datalist> 
+            <!-- Dynamically populate options based on the rooms dictionary -->
+            {% for room_name in rooms.keys %}
+                <option value="{{ room_name }}"></option>
+            {% endfor %}
+        </datalist>
         <button class="destination-button">Send</button>
       
     </div>

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-
 import sys
 import os
+from map.models import Map
 
 # Get the base directory of the project
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +33,55 @@ def robot_configuration(request):
     return render(request, 'control/form.html')
 
 def control_page(request):
-    return render(request, 'control/control.html')
+    if request.user.is_authenticated:
+        # Fetch the user's current map
+        current_map = Map.objects.filter(user=request.user, is_current=True).first()
+        if current_map:
+            matrix = current_map.matrix
+            rooms = current_map.rooms
+        else:
+            # If no current map, use the default map
+            matrix = [
+                [0, 2, 2, 0, 1, 0],
+                [0, 0, 0, 0, 1, 0],
+                [0, 1, 0, 0, 1, 2],
+                [0, 0, 0, 0, 2, 0],
+                [2, 1, 0, 1, 1, 2]
+            ]
+            rooms = {
+                "Accueil": (0, 1),
+                "Bureau des enseignants": (4, 4),
+                "Classe 1": (0, 2),
+                "Classe 2": (2, 5),
+                "Classe 3": (4, 0),
+                "Toilette": (2, 5),
+                "Escalier": (4, 0),
+                "Bureau du directeur": (4, 5)
+            }
+    else:
+        # Use the default map for unauthenticated users
+        matrix = [
+            [0, 2, 2, 0, 1, 0],
+            [0, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 1, 2],
+            [0, 0, 0, 0, 2, 0],
+            [2, 1, 0, 1, 1, 2]
+        ]
+        rooms = {
+            "Accueil": (0, 1),
+            "Bureau des enseignants": (4, 4),
+            "Classe 1": (0, 2),
+            "Classe 2": (2, 5),
+            "Classe 3": (4, 0),
+            "Toilette": (2, 5),
+            "Escalier": (4, 0),
+            "Bureau du directeur": (4, 5)
+        }
+
+    return render(request, 'control/control.html', {
+        'matrix': matrix,
+        'rooms': rooms,
+    })
 
 def submit_robot_data(request):
     if request.method == 'POST':

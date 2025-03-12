@@ -1,4 +1,6 @@
 const language = "{{ language }}";
+{{ rooms }};
+console.log(rooms)
 
 function toggleInputZone() {
     const inputZone = document.querySelector('.input-zone');
@@ -116,7 +118,6 @@ function sendSpeech() {
 }
 
 
-
 function sendDestination(destination) {
     fetch('/destination/', {
         method: 'POST',
@@ -125,6 +126,7 @@ function sendDestination(destination) {
         },
         body: JSON.stringify({
             location: destination,
+            rooms: rooms
         })
     })
     .then(response => response.json())

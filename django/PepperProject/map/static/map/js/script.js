@@ -3,6 +3,7 @@
 const mapElement = document.getElementById('map');
 const matrixString = mapElement.getAttribute('data-matrix'); // Get the JSON string*
 const mapId = parseInt(mapElement.getAttribute('data-id')); // Get the JSON string*
+let rooms = {}; // Dictionary to store room names and their coordinates
 
 let matrix;
 try {
@@ -35,20 +36,31 @@ function renderMap() {
 }
 
 // Handle cell clicks
+
 function handleCellClick(rowIndex, colIndex) {
-  if (selectedValue === 2) {
-      const roomName = prompt('Enter room name:');
-      if (roomName) {
-          matrix[rowIndex][colIndex] = 2;
-          renderMap();
-          saveMatrixToBackend(); // Sync with backend
-      }
-  } else {
-      matrix[rowIndex][colIndex] = selectedValue;
-      renderMap();
-      saveMatrixToBackend(); // Sync with backend
+    if (selectedValue === 2) {
+        // Adding a new room
+        const roomName = prompt('Enter room name:');
+        if (roomName) {
+            matrix[rowIndex][colIndex] = 2;
+            rooms[roomName] = [rowIndex, colIndex]; // Add room to the dictionary
+            renderMap();
+        }
+    } else {
+        // Removing or updating a cell
+        if (matrix[rowIndex][colIndex] === 2) {
+            // If the cell was a room, remove it from the rooms dictionary
+            const roomName = Object.keys(rooms).find(
+                key => rooms[key][0] === rowIndex && rooms[key][1] === colIndex
+            );
+            if (roomName) {
+                delete rooms[roomName]; // Remove the room from the dictionary
+            }
+        }
+        matrix[rowIndex][colIndex] = selectedValue; // Update the cell value
+        renderMap();
+    }
   }
-}
 
 // Add a new row
 function addRow() {
@@ -100,6 +112,7 @@ document.querySelector('.legend-item[data-value="2"]').classList.add('selected')
 function saveMatrixToBackend() {
     console.log('Map id:', mapId);
     console.log('Matrix being sent:', matrix);
+    console.log('Rooms being sent:', rooms);
 
     fetch(`/map/save-map/`, {
         method: 'POST',
@@ -110,11 +123,16 @@ function saveMatrixToBackend() {
         body: JSON.stringify({
             id: mapId,
             matrix: matrix,
+            rooms: rooms, // Include the rooms dictionary
         })
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            // Log the response body for more details
+            return response.json().then(err => {
+                console.error('Server error:', err);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            });
         }
         return response.json();
     })
@@ -134,8 +152,9 @@ function saveMatrixToBackend() {
 document.getElementById('save-map-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent the default form submission
 
-    // Update the hidden input fields with the current matrix and map ID
+    // Update the hidden input fields with the current matrix, rooms, and map ID
     document.getElementById('map-matrix').value = JSON.stringify(matrix);
+    document.getElementById('map-rooms').value = JSON.stringify(rooms);
     document.getElementById('map-id').value = mapId;
 
     // Submit the form data
