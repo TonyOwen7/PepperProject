@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     'robots',
     'map',
+    'speech'
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'users/static'),
     os.path.join(BASE_DIR, 'control/static'),
     os.path.join(BASE_DIR, 'robots/static'),
-
+    os.path.join(BASE_DIR, 'speech/static'),
 ]
 
 

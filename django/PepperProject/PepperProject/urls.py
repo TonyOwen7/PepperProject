@@ -22,5 +22,6 @@ urlpatterns = [
     path('', include('control.urls')),
     path('users/', include('users.urls')),
     path('robots/', include('robots.urls')),
-    path('map/', include('map.urls'))
+    path('map/', include('map.urls')),
+    path('speech/', include('speech.urls'))
 ]

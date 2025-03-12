@@ -143,6 +143,9 @@ def handle_speech(request):
             return JsonResponse({'response': speech})    
         else:
             return JsonResponse({'response': 'Aucune question n\'a été posée'})
+    else:
+        return JsonResponse({'response': 'Cette vue ne supporte que les requêtes POST.'}, status=405)
+            
 
 def stop_processes(request):
     if request.method == 'POST':

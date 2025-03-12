@@ -1,0 +1,117 @@
+/* Speech List Styles */
+.speech-list {
+    margin-top: 50px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Style for each speech item */
+  .speech-item {
+    background: #ffffff;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .speech-item:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .speech-item strong {
+    font-size: 24px;
+    color: #3498db;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .speech-item p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #34495e;
+  }
+  
+  .speech-item .label {
+    font-weight: bold;
+    color: #3498db;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .speech-item .value {
+    color: #2c3e50;
+    font-weight: 600;
+    color: #35dca4;
+  }
+  
+  .speech-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .edit-btn, .delete-btn, .play-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  
+  .edit-btn {
+    background: #25f312;
+    color: white;
+  }
+  
+  .edit-btn:hover {
+    background: #28bb1b;
+  }
+  
+  .delete-btn {
+    background: #3ce7c2;
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background: #4caf9a;
+  }
+  
+  .play-btn {
+    background: #0078d4;
+    color: white;
+  }
+  
+  .play-btn:hover {
+    background: #005a9e;
+  }
+  
+  /* Create New Speech Button */
+  .create-speech {
+    margin-bottom: 20px;
+  }
+  
+  .create-btn {
+    background: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  
+  .create-btn:hover {
+    background: #0056b3;
+  }
