@@ -3,6 +3,9 @@
 {% block content %}
 <div class="container">
     <h1>my robots</h1>
+    <div class="create-robot" style="text-align: center; padding: 40px 0;">
+        <p style="text-align: center; padding: 20px 0;"><a href="{% url 'create_robot' %}" class="create-btn" >Add a new robot</a>.</p>
+    </div>
 
     {% if robots %}
         <ul class="robot-list">
@@ -29,7 +32,6 @@
                 </li>
             {% endfor %}
         </ul>
-        <p style="text-align: center;"><a href="{% url 'create_robot' %}">Add a new robot</a>.</p>
 
     {% else %}
         <p style="text-align: center;">You have no robots yet. <a href="{% url 'create_robot' %}">Add a new robot</a>.</p>

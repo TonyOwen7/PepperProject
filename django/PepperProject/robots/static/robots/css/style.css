@@ -152,6 +152,19 @@ form {
     background: #005a9e;
 }
 
+.create-robot {
+    margin-bottom: 20px;
+  }
+  
+.create-btn {
+  background: #0078d4;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
 /* Back Link */
 .back-link {
     display: inline-block;

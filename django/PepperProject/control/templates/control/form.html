@@ -13,14 +13,11 @@
         <h1>Control Your Pepper</h1>
         <nav class="header-nav">
             {% if user.is_authenticated %}
-                <!-- Show Logout if the user is authenticated -->
-                <a href="{% url 'edit_map' %}" class="nav-link">create map</a>
+                <a href="{% url 'user_speeches' %}" class="nav-link">my speeches</a>
                 <a href="{% url 'user_maps' %}" class="nav-link">my maps</a>
                 <a href="{% url 'user_robots' %}" class="nav-link">my robots</a>
-                <a href="{% url 'create_robot' %}" class="nav-link">Add Robot</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
             {% else %}
-                <!-- Show Login and Register if the user is not authenticated -->
                 <a href="{% url 'login' %}" class="nav-link">Login</a>
                 <a href="{% url 'register' %}" class="nav-link">Register</a>
             {% endif %}
