@@ -1,7 +1,6 @@
 const language = "{{ language }}";
 {{ rooms }};
-console.log(rooms)
-
+-
 function toggleInputZone() {
     const inputZone = document.querySelector('.input-zone');
     inputZone.classList.toggle('hidden');
@@ -35,13 +34,29 @@ document.querySelector('.destination-button').addEventListener('click', function
         alert("Veuillez choisir une destination !");
     }
 });
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
+const csrftoken = getCookie('csrftoken');
 
 function sendMove(move) {
     fetch('/move/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,  // Include the CSRF token in the headers
         },
         body: JSON.stringify({
             command_move: move,
@@ -49,9 +64,8 @@ function sendMove(move) {
     })
     .then(response => response.json())
     .then(result => console.log(result.message))
-    .catch(error => console.error('Erreur:', error));
+    .catch(error => console.error('Error:', error));
 }
-
 
 function switchTab(tabName) {
     document.querySelectorAll('.tab-button').forEach(button => {
@@ -63,18 +77,18 @@ function switchTab(tabName) {
     });
 
     document.getElementById(`${tabName}-tab`).classList.remove('hidden');
-    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    document.querySelector([onclick="switchTab('${tabName}')"]).classList.add('active');
 }
-
 
 function sendQuestion() {
     const input = document.getElementById('question-input');
     const text = input.value.trim();
     if (text) {
-        fetch('/question', {
+        fetch('/question/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,  // Include the CSRF token
             },
             body: JSON.stringify({
                 question: text,
@@ -92,7 +106,6 @@ function sendQuestion() {
     }
 }
 
-
 function sendSpeech() {
     const input = document.getElementById('speech-input');
     const text = input.value.trim();
@@ -101,6 +114,7 @@ function sendSpeech() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,  // Include the CSRF token
             },
             body: JSON.stringify({
                 speech: text,
@@ -117,12 +131,12 @@ function sendSpeech() {
     }
 }
 
-
 function sendDestination(destination) {
     fetch('/destination/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,  // Include the CSRF token
         },
         body: JSON.stringify({
             location: destination,

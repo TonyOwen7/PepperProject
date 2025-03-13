@@ -22,51 +22,48 @@ document.addEventListener('DOMContentLoaded', () => {
     switchTab('robot-config');
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("pepperForm");
-    
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Empêche l'envoi du formulaire classique
-    
-            // Récupérer les valeurs du formulaire
-            const formData = new FormData(form);
-            const robotIp = formData.get("robot_ip");
-            const networkInterface = formData.get("network_interface");
-            const language = formData.get("language");
-    
-            // Affichez les valeurs pour vérification (console log)
-            console.log("Robot IP:", robotIp);
-            console.log("Network Interface:", networkInterface);
-            console.log("Language:", language);
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
-    // Envoyer les données au serveur Flask
-    fetch('/submit', {
+const csrftoken = getCookie('csrftoken');
+
+document.getElementById('pepperForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('/submit/', {
         method: 'POST',
+        body: formData,
         headers: {
-            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,  // Include the CSRF token in the headers
         },
-        body: JSON.stringify({
-            robot_ip: robotIp,
-            network_interface: networkInterface,
-            language: language
-        })
     })
     .then(response => {
-        console.log('Réponse reçue:', response);  // Vérifier si la réponse est bien reçue
-        return response.json();
-    })
-    .then(result => {
-        console.log('Résultat du serveur:', result);  // Voir la réponse du serveur
-        // Rediriger vers la page de contrôle avec l'IP et l'interface du robot
-        if (result.redirect_url) {
-            window.location.href = result.redirect_url;
+        if (response.ok) {
+            return response.json();
         } else {
-            console.error('Pas de redirection trouvée dans la réponse');
+            throw new Error('Network response was not ok.');
+        }
+    })
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
         }
     })
     .catch(error => {
-        console.error('Erreur:', error);  // Gérer les erreurs
-        });
-    })
-})
-
+        console.error('Error:', error);
+    });
+});

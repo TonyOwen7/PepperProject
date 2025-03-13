@@ -83,6 +83,10 @@ def control_page(request):
         'rooms': rooms,
     })
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt  # Only use this for debugging!
+
+# @csrf_exempt  # Uncomment this line ONLY for debugging to bypass CSRF protection
 def submit_robot_data(request):
     if request.method == 'POST':
         data = request.POST
@@ -90,13 +94,16 @@ def submit_robot_data(request):
         network_interface = data.get('network_interface')
         language = data.get('language')
         
+        # Process the data (e.g., start the robot process)
         robot_process_manager.start(robot_ip, network_interface)
 
         return JsonResponse({
             'redirect_url': '/control/',
             'language': language,
         })
-
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
 def handle_move(request):
     if request.method == 'POST':
         data = request.POST

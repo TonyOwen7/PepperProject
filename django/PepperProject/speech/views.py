@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Speech
 from .forms import SpeechForm
+from control.module.pepper_speach.pepper_speach import pepper_speak
 
 @login_required
 def speech_list(request):
@@ -16,7 +17,7 @@ def create_speech(request):
             speech = form.save(commit=False)
             speech.user = request.user
             speech.save()
-            return redirect('/speech/speech_list')
+            return redirect('/speech/user_speeches')
     else:
         form = SpeechForm()
     return render(request, 'speech/speech_form.html', {'form': form})
@@ -28,7 +29,7 @@ def edit_speech(request, speech_id):
         form = SpeechForm(request.POST, instance=speech)
         if form.is_valid():
             form.save()
-            return redirect('/speech/speech_list')
+            return redirect('/speech/user_speeches')
     else:
         form = SpeechForm(instance=speech)
     return render(request, 'speech/speech_form.html', {'form': form})
@@ -38,10 +39,10 @@ def delete_speech(request, speech_id):
     speech = get_object_or_404(Speech, id=speech_id, user=request.user)
     if request.method == 'POST':
         speech.delete()
-        return redirect('/speech/speech_list')
+        return redirect('/speech/user_speeches')
     return render(request, 'speech/speech_confirm_delete.html', {'speech': speech})
 
 @login_required
 def play_speech(request, speech_id):
     speech = get_object_or_404(Speech, id=speech_id, user=request.user)
-    return redirect('control/speech/', {'speech': speech})
+    pepper_speak(speech.content)
