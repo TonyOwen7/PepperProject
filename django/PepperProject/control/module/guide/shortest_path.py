@@ -1,15 +1,8 @@
 from collections import deque
-from mymap import DIRECTIONS
+from mymap import DIRECTIONS, university_matrix
 import numpy as np
 from numpy import inf 
 
-university_matrix = [
-    [0, 2, 2, 0, 1, 0],
-    [0, 1, 0, 0, 1, 0],
-    [0, 1, 0, 2, 1, 0],
-    [0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 1, 1, 2]
-]
 
 def create_adjacency_matrix(mymap, start, destination):
     nb_lines = len(mymap)
@@ -106,3 +99,4 @@ def bfs(mymap, start, goal):
     find_shortests_path(mymap, matrix_shortest_path, shortest_paths, [start], goal, nb_nodes)
                                 
     return shortest_paths
+

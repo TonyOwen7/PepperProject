@@ -151,7 +151,7 @@ def save_map(request):
             matrices = json.loads(request.POST.get('matrices', '[]'))
             rows = int(request.POST.get('rows', 4))
             cols = int(request.POST.get('cols', 4))
-            rooms = json.loads(request.POST.get('rooms', '{}'))  # Get the rooms dictionary
+            rooms = json.loads(request.POST.get('rooms')) # Get the rooms dictionary
             map_id = request.POST.get('map_id')
             map_name = request.POST.get('name')
 
@@ -212,6 +212,8 @@ def edit_map(request, map_name=None, map_id=None):
     if map_id:
         # Load existing map
         map_instance = get_object_or_404(Map, id=map_id, user=request.user)
+        print("After saving:", map_instance.rooms)  # Should print {}
+
     else:
         # Create a new map
         default_name = f"Map {Map.objects.filter(user=request.user).count() + 1}"  # Generate a default name
@@ -220,6 +222,7 @@ def edit_map(request, map_name=None, map_id=None):
         rows, cols = 4, 4
 
         # Create the new map instance
+        print("Before saving:", rooms)  # Should print {}
         map_instance = Map.objects.create(
             user=request.user,
             name=default_name,
@@ -230,6 +233,7 @@ def edit_map(request, map_name=None, map_id=None):
             is_default=False,
             is_current=False
         )
+        print("After saving:", map_instance.rooms)  # Should print {}
 
         # Ensure the assets/username directory exists
         user_folder = os.path.join(settings.BASE_DIR, 'assets', request.user.username)
@@ -241,7 +245,7 @@ def edit_map(request, map_name=None, map_id=None):
 
     # Serialize matrices to JSON
     matrices_json = json.dumps(map_instance.matrices)
-    rooms_json = map_instance.rooms
+    rooms_json =  json.dumps(map_instance.rooms)
 
     return render(request, 'map/map_editor.html', {
         'map': map_instance,
@@ -270,7 +274,7 @@ def save_map(request):
             matrices = json.loads(request.POST.get('matrices', '[]'))
             rows = int(request.POST.get('rows', 4))
             cols = int(request.POST.get('cols', 4))
-            rooms = json.loads(request.POST.get('rooms', '{}'))  # Get the rooms dictionary
+            rooms = json.loads(request.POST.get('rooms'))  # Get the rooms dictionary
             map_id = request.POST.get('map_id')
             map_name = request.POST.get('name')
 

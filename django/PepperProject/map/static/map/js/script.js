@@ -3,18 +3,11 @@ const mapElement = document.getElementById('map');
 const matrices = JSON.parse(mapElement.getAttribute('data-matrices'));
 const number_of_floors = JSON.parse(mapElement.getAttribute('data-number-of-floors'));
 
-
 const mapId = parseInt(mapElement.getAttribute('data-id'));
-let rooms;
-try {
-    rooms = JSON.parse(mapElement.getAttribute('data-rooms')) || {};
-    if (typeof rooms !== "object" || Array.isArray(rooms)) {
-        throw new Error("Invalid rooms format");
-    }
-} catch (error) {
-    console.error("Failed to parse rooms data:", error);
-    rooms = {}; // Default to an empty dictionary
-}
+// let rooms = JSON.parse(mapElement.getAttribute('data-rooms'))
+
+const  rooms = JSON.parse(mapElement.getAttribute('data-rooms'));
+   
 console.log('Matrices:', matrices);  // Debugging: Log the matrices
 console.log('Map ID:', mapId);       // Debugging: Log the map ID
 console.log('Rooms:', rooms);        // Debugging: Log the rooms
@@ -85,26 +78,24 @@ function removeMatrix() {
     }
 }
 function handleCellClick(rowIndex, colIndex) {
-    if (selectedValue === 2) {
-      // Adding a new room
+    if (selectedValue == 2) {
       const roomName = prompt('Enter room name:');
-      console.log(roomName);
       if (roomName) {
-        // Remove this console.log(type) - 'type' isn't defined here
+              console.log("in", roomName);
+
         matrices[currentMatrixIndex][rowIndex][colIndex] = 2; // Mark as room
-        rooms[roomName] = [currentMatrixIndex + 1, rowIndex, colIndex]; // Store room position
+        rooms[roomName] = [currentMatrixIndex, rowIndex, colIndex];
       }
-    } else if (selectedValue === 3) {
+    } else if (selectedValue == 3) {
       // Adding stairs/doors
       const type = prompt('Enter type (stairs/elevator):');
       if (type && (type.toLowerCase() === 'stairs' || type.toLowerCase() === 'elevator')) {
         matrices[currentMatrixIndex][rowIndex][colIndex] = 3; // Mark as stairs/doors
-        rooms[type] = [currentMatrixIndex + 1, rowIndex, colIndex]; // Store stairs/doors position
+        rooms[type] = [currentMatrixIndex, rowIndex, colIndex];
       }
     } else {
       // Removing or updating a cell
       if (matrices[currentMatrixIndex][rowIndex][colIndex] === 2 || matrices[currentMatrixIndex][rowIndex][colIndex] === 3) {
-        // If the cell was a room or stairs/doors, remove it from the rooms dictionary
         const roomName = Object.keys(rooms).find(
           key => rooms[key][0] === currentMatrixIndex + 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
         );
@@ -115,6 +106,7 @@ function handleCellClick(rowIndex, colIndex) {
       matrices[currentMatrixIndex][rowIndex][colIndex] = selectedValue; // Update the cell value
     }
     console.log(rooms)
+
     renderMap();
   }
 
@@ -243,26 +235,3 @@ function getCookie(name) {
 
 // Initial render
 renderMap();
-
-let unsavedChanges = false;
-
-// Track changes in matrices or rooms
-function trackChanges() {
-    unsavedChanges = true;
-}
-
-// Mark changes when user modifies the map
-document.getElementById('map').addEventListener('click', trackChanges);
-
-// Warn the user if they try to leave without saving
-window.addEventListener('beforeunload', (event) => {
-    if (unsavedChanges) {
-        event.preventDefault();
-        event.returnValue = 'You have unsaved changes. Do you really want to leave?';
-    }
-});
-
-// Reset flag when saving
-document.getElementById('save-map-form').addEventListener('submit', () => {
-    unsavedChanges = false;
-});

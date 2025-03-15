@@ -11,7 +11,7 @@ sys.path.append(mymap_path)
 sys.path.append(shortest_path_path)
 sys.path.append(search_pattern_path)
 
-from move import *
+# from move import *
 from mymap import university_matrix, DIRECTIONS, location_queries, pepper_direction, pepper_position
 from shortest_path import *
 from search_pattern import *
@@ -112,19 +112,20 @@ def guide(driver, chosen_location, myMap):
         location_regex = re.sub(r"\s+", r"\\s+", location)
 
         if re.search(location_regex, chosen_location, re.IGNORECASE):
-            row, col = location_queries[location]
+            floor, row, col = location_queries[location]
             print(f"Location found: {location}, at row {row}, column {col}")
             location_found = True
-            paths = bfs(myMap, tuple(pepper_position), (row, col))
+            paths = bfs(myMap, tuple(pepper_position), (floor, row, col))
             shortest_path = paths[0]
 
             if shortest_path:
                 commands = upgrade_position_and_direction(shortest_path)
                 
                 commands = clearup_sequence_of_moves(commands)
-                     
-                for command in commands:
-                    move(driver, command[0], command[1])
+                print(commands)
+                # for command in commands:
+                    # move(driver, command[0], command[1])
             else:
                 print("Désolé, je ne peux pas atteindre cette destination.")
             break
+guide("test", "bibliothèque", "Accueil")

@@ -8,7 +8,7 @@ class Map(models.Model):
     matrices = models.JSONField(default=list)  # Stores a list of 2D matrices
     rows = models.IntegerField(default=4)  # Number of rows in each matrix
     cols = models.IntegerField(default=4)  # Number of columns in each matrix
-    rooms = models.JSONField(default=dict)  # Stores the dictionary of rooms and their coordinates
+    rooms = models.JSONField(default=list)  # Stores the dictionary of rooms and their coordinates
     is_default = models.BooleanField(default=False)
     is_current = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
