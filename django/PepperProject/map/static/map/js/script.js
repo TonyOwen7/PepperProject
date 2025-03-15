@@ -1,170 +1,211 @@
-
-// Access the element
 const mapElement = document.getElementById('map');
-const matrixString = mapElement.getAttribute('data-matrix'); // Get the JSON string*
-const mapId = parseInt(mapElement.getAttribute('data-id')); // Get the JSON string*
-let rooms = {}; // Dictionary to store room names and their coordinates
 
-let matrix;
+const matrices = JSON.parse(mapElement.getAttribute('data-matrices'));
+const number_of_floors = JSON.parse(mapElement.getAttribute('data-number-of-floors'));
+
+
+const mapId = parseInt(mapElement.getAttribute('data-id'));
+let rooms;
 try {
-    matrix = JSON.parse(matrixString || '[]');
+    rooms = JSON.parse(mapElement.getAttribute('data-rooms')) || {};
+    if (typeof rooms !== "object" || Array.isArray(rooms)) {
+        throw new Error("Invalid rooms format");
+    }
 } catch (error) {
-    console.error('Failed to parse JSON:', error);
+    console.error("Failed to parse rooms data:", error);
+    rooms = {}; // Default to an empty dictionary
 }
+console.log('Matrices:', matrices);  // Debugging: Log the matrices
+console.log('Map ID:', mapId);       // Debugging: Log the map ID
+console.log('Rooms:', rooms);        // Debugging: Log the rooms
+document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
+
+let currentMatrixIndex = 0; // Track the currently displayed matrix
+let rows = matrices[0].length;
+let cols = matrices[0][0].length;
 
 let selectedValue = 2; // Default to room
-let currentMapId = null; // Track the current map ID
 
-console.log(mapElement, "test")
-
-// Render the map grid
+// Render the current matrix
 function renderMap() {
-  mapElement.innerHTML = '';
-  mapElement.style.gridTemplateColumns = `repeat(${matrix[0].length}, 50px)`;
+    const matrix = matrices[currentMatrixIndex];
+    mapElement.innerHTML = '';
+    mapElement.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
 
-  matrix.forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
-          const cellElement = document.createElement('div');
-          cellElement.classList.add('cell');
-          if (cell === 0) cellElement.classList.add('empty');
-          else if (cell === 1) cellElement.classList.add('obstacle');
-          else if (cell === 2) cellElement.classList.add('room');
-          cellElement.addEventListener('click', () => handleCellClick(rowIndex, colIndex));
-          mapElement.appendChild(cellElement);
-      });
-  });
+    matrix.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+            if (cell === 0) cellElement.classList.add('empty');
+            else if (cell === 1) cellElement.classList.add('obstacle');
+            else if (cell === 2) cellElement.classList.add('room');
+            else if (cell === 3) cellElement.classList.add('stairs'); // Add stairs/doors class
+            cellElement.addEventListener('click', () => handleCellClick(rowIndex, colIndex));
+            mapElement.appendChild(cellElement);
+        });
+    });
 }
 
-// Handle cell clicks
 
+function updateCarousel() {
+    document.getElementById('matrix-index').textContent = `Floor ${currentMatrixIndex + 1}`;
+}
+
+document.getElementById('prev-matrix').addEventListener('click', () => {
+    if (currentMatrixIndex > 0) {
+        currentMatrixIndex--;
+        renderMap();
+        updateCarousel();
+    }
+});
+
+document.getElementById('next-matrix').addEventListener('click', () => {
+    if (currentMatrixIndex < matrices.length - 1) {
+        currentMatrixIndex++;
+        renderMap();
+        updateCarousel();
+    }
+});
+
+function addMatrix() {
+    const newMatrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+    matrices.push(newMatrix);
+    currentMatrixIndex = matrices.length - 1;
+    document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
+    renderMap();
+    updateCarousel();
+}
+
+function removeMatrix() {
+    if (matrices.length > 1) {
+        matrices.splice(currentMatrixIndex, 1);
+        currentMatrixIndex = Math.min(currentMatrixIndex, matrices.length - 1);
+        renderMap();
+        updateCarousel();
+    }
+}
 function handleCellClick(rowIndex, colIndex) {
     if (selectedValue === 2) {
-        // Adding a new room
-        const roomName = prompt('Enter room name:');
-        if (roomName) {
-            matrix[rowIndex][colIndex] = 2;
-            rooms[roomName] = [rowIndex, colIndex]; // Add room to the dictionary
-            renderMap();
-        }
+      // Adding a new room
+      const roomName = prompt('Enter room name:');
+      console.log(roomName);
+      if (roomName) {
+        // Remove this console.log(type) - 'type' isn't defined here
+        matrices[currentMatrixIndex][rowIndex][colIndex] = 2; // Mark as room
+        rooms[roomName] = [currentMatrixIndex + 1, rowIndex, colIndex]; // Store room position
+      }
+    } else if (selectedValue === 3) {
+      // Adding stairs/doors
+      const type = prompt('Enter type (stairs/elevator):');
+      if (type && (type.toLowerCase() === 'stairs' || type.toLowerCase() === 'elevator')) {
+        matrices[currentMatrixIndex][rowIndex][colIndex] = 3; // Mark as stairs/doors
+        rooms[type] = [currentMatrixIndex + 1, rowIndex, colIndex]; // Store stairs/doors position
+      }
     } else {
-        // Removing or updating a cell
-        if (matrix[rowIndex][colIndex] === 2) {
-            // If the cell was a room, remove it from the rooms dictionary
-            const roomName = Object.keys(rooms).find(
-                key => rooms[key][0] === rowIndex && rooms[key][1] === colIndex
-            );
-            if (roomName) {
-                delete rooms[roomName]; // Remove the room from the dictionary
-            }
+      // Removing or updating a cell
+      if (matrices[currentMatrixIndex][rowIndex][colIndex] === 2 || matrices[currentMatrixIndex][rowIndex][colIndex] === 3) {
+        // If the cell was a room or stairs/doors, remove it from the rooms dictionary
+        const roomName = Object.keys(rooms).find(
+          key => rooms[key][0] === currentMatrixIndex + 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+        );
+        if (roomName) {
+          delete rooms[roomName]; // Remove the room or stairs/doors from the dictionary
         }
-        matrix[rowIndex][colIndex] = selectedValue; // Update the cell value
+      }
+      matrices[currentMatrixIndex][rowIndex][colIndex] = selectedValue; // Update the cell value
+    }
+    console.log(rooms)
+    renderMap();
+  }
+
+// Add a new matrix (floor)
+function addMatrix() {
+    const newMatrix = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
+    matrices.push(newMatrix);
+    currentMatrixIndex = matrices.length - 1;
+    renderMap();
+    updateCarousel();
+}
+
+// Remove the current matrix (floor)
+function removeMatrix() {
+    if (matrices.length > 1) {
+        matrices.splice(currentMatrixIndex, 1);
+        currentMatrixIndex = Math.min(currentMatrixIndex, matrices.length - 1);
+        renderMap();
+        updateCarousel();
+    }
+}
+
+// Add a new row to all matrices
+function addRow() {
+    matrices.forEach(matrix => matrix.push(new Array(cols).fill(0)));
+    rows++;
+    renderMap();
+}
+
+// Add a new column to all matrices
+function addColumn() {
+    matrices.forEach(matrix => matrix.forEach(row => row.push(0)));
+    cols++;
+    renderMap();
+}
+
+// Remove the last row from all matrices
+function removeRow() {
+    if (rows > 1) {
+        matrices.forEach(matrix => matrix.pop());
+        rows--;
         renderMap();
     }
-  }
-
-// Add a new row
-function addRow() {
-  const newRow = new Array(matrix[0].length).fill(0); // Default to empty
-  matrix.push(newRow);
-  renderMap();
 }
 
-// Add a new column
-function addColumn() {
-  matrix = matrix.map(row => [...row, 0]); // Default to empty
-  renderMap();
-}
-
-// Remove the last row
-function removeRow() {
-  if (matrix.length > 1) {
-      matrix.pop();
-      renderMap();
-  }
-}
-
-// Remove the last column
+// Remove the last column from all matrices
 function removeColumn() {
-  if (matrix[0].length > 1) {
-      matrix = matrix.map(row => row.slice(0, -1));
-      renderMap();
-  }
+    if (cols > 1) {
+        matrices.forEach(matrix => matrix.forEach(row => row.pop()));
+        cols--;
+        renderMap();
+    }
 }
 
 // Handle color legend clicks
 document.querySelectorAll('.legend-item').forEach(item => {
-  item.addEventListener('click', () => {
-      // Remove the 'selected' class from all legend items
-      document.querySelectorAll('.legend-item').forEach(i => i.classList.remove('selected'));
-      // Add the 'selected' class to the clicked legend item
-      item.classList.add('selected');
-      // Update the selected value
-      selectedValue = parseInt(item.getAttribute('data-value'));
-  });
+    item.addEventListener('click', () => {
+        // Remove the 'selected' class from all legend items
+        document.querySelectorAll('.legend-item').forEach(i => i.classList.remove('selected'));
+        // Add the 'selected' class to the clicked legend item
+        item.classList.add('selected');
+        // Update the selected value
+        selectedValue = parseInt(item.getAttribute('data-value'));
+    });
 });
-
 
 // Set the default selected legend item (room)
 document.querySelector('.legend-item[data-value="2"]').classList.add('selected');
-// Get the map element and matrix data
 
-// Function to save the matrix to the backend
-function saveMatrixToBackend() {
-    console.log('Map id:', mapId);
-    console.log('Matrix being sent:', matrix);
-    console.log('Rooms being sent:', rooms);
+// Save the map
+document.getElementById('save-map-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    fetch(`/map/save-map/`, {
+    // Prepare the data to send
+    const data = {
+        id: mapId,
+        matrices: matrices,
+        rows: rows,
+        cols: cols,
+        rooms: rooms,
+        name: document.getElementById('map-name').value,
+    };
+
+    // Send the data as JSON
+    fetch(this.action, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
         },
-        body: JSON.stringify({
-            id: mapId,
-            matrix: matrix,
-            rooms: rooms, // Include the rooms dictionary
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            // Log the response body for more details
-            return response.json().then(err => {
-                console.error('Server error:', err);
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.message === 'Matrix saved successfully') {
-            console.log('Matrix saved successfully.');
-        } else {
-            console.error('Error saving matrix:', data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error during saveMatrixToBackend:', error);
-    });
-}
-
-// Handle form submission
-document.getElementById('save-map-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    // Update the hidden input fields with the current matrix, rooms, and map ID
-    document.getElementById('map-matrix').value = JSON.stringify(matrix);
-    document.getElementById('map-rooms').value = JSON.stringify(rooms);
-    document.getElementById('map-id').value = mapId;
-
-    // Submit the form data
-    const formData = new FormData(this);
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
-        },
+        body: JSON.stringify(data),
     })
     .then(response => {
         if (response.redirected) {
@@ -175,9 +216,7 @@ document.getElementById('save-map-form').addEventListener('submit', function (ev
         }
     })
     .then(data => {
-        if (data && data.message === 'Matrix saved successfully') {
-            console.log('Matrix saved successfully.');
-        } else if (data) {
+        if (data && data.error) {
             console.error('Error saving matrix:', data.error);
         }
     })
@@ -186,38 +225,44 @@ document.getElementById('save-map-form').addEventListener('submit', function (ev
     });
 });
 
-// Fetch matrix from backend
-function fetchMatrixFromBackend(mapId) {
-  fetch(`/get-matrix/${mapId}/`)
-      .then(response => response.json())
-      .then(data => {
-          if (data.matrix) {
-              matrix = data.matrix;
-              renderMap();
-          } else {
-              console.error('Error fetching matrix:', data.error);
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-      });
-}
-
 // Get CSRF token from cookies
 function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-          }
-      }
-  }
-  return cookieValue;
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 // Initial render
 renderMap();
+
+let unsavedChanges = false;
+
+// Track changes in matrices or rooms
+function trackChanges() {
+    unsavedChanges = true;
+}
+
+// Mark changes when user modifies the map
+document.getElementById('map').addEventListener('click', trackChanges);
+
+// Warn the user if they try to leave without saving
+window.addEventListener('beforeunload', (event) => {
+    if (unsavedChanges) {
+        event.preventDefault();
+        event.returnValue = 'You have unsaved changes. Do you really want to leave?';
+    }
+});
+
+// Reset flag when saving
+document.getElementById('save-map-form').addEventListener('submit', () => {
+    unsavedChanges = false;
+});

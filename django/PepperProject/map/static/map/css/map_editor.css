@@ -1,18 +1,12 @@
-
 .container {
-  margin-top: 50px;
   text-align: center;
   background-color: #fff;
-  padding: 20px;
   width: fit-content;
   height: fit-content;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  margin-bottom: 20px;
-}
 
 #map {
   display: grid;
@@ -48,6 +42,10 @@ h1 {
 
 .cell.room {
   background-color: lightblue;
+}
+
+.cell.stairs {
+  background-color: #ffcc99; /* Apricot color */
 }
 
 .color-legend {
@@ -95,6 +93,10 @@ h1 {
   background-color: lightblue;
 }
 
+.color-box.stairs {
+  background-color: #ffcc99; /* Apricot color */
+}
+
 .controls {
   display: flex;
   gap: 10px;
@@ -113,4 +115,47 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+/* Carousel styles */
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.carousel button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.carousel button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.carousel button:active {
+  transform: scale(0.95);
+}
+
+#matrix-index {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+#type-input {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 10px;
 }

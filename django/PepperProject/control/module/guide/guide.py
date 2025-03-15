@@ -106,7 +106,7 @@ def upgrade_position_and_direction(path):
                                                   
     return commands
 
-def guide(driver, chosen_location):
+def guide(driver, chosen_location, myMap):
     global university_matrix, location_queries, pepper_position, pepper_direction
     for location in location_queries:
         location_regex = re.sub(r"\s+", r"\\s+", location)
@@ -115,7 +115,7 @@ def guide(driver, chosen_location):
             row, col = location_queries[location]
             print(f"Location found: {location}, at row {row}, column {col}")
             location_found = True
-            paths = bfs(university_matrix, tuple(pepper_position), (row, col))
+            paths = bfs(myMap, tuple(pepper_position), (row, col))
             shortest_path = paths[0]
 
             if shortest_path:

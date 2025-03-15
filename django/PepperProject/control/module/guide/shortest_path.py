@@ -106,8 +106,3 @@ def bfs(mymap, start, goal):
     find_shortests_path(mymap, matrix_shortest_path, shortest_paths, [start], goal, nb_nodes)
                                 
     return shortest_paths
-
-M = [
-    [0, 2, 2, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0]
-]

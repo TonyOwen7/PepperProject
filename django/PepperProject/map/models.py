@@ -5,7 +5,9 @@ class Map(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maps')
     name = models.CharField(max_length=255)
-    matrix = models.JSONField()  # Stores the map matrix as a JSON array
+    matrices = models.JSONField(default=list)  # Stores a list of 2D matrices
+    rows = models.IntegerField(default=4)  # Number of rows in each matrix
+    cols = models.IntegerField(default=4)  # Number of columns in each matrix
     rooms = models.JSONField(default=dict)  # Stores the dictionary of rooms and their coordinates
     is_default = models.BooleanField(default=False)
     is_current = models.BooleanField(default=False)

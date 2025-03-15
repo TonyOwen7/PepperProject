@@ -1,69 +1,36 @@
-// Function to switch tabs
-function switchTab(tabName) {
-    // Hide all tab content
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    // Show the selected tab content
-    document.getElementById(`${tabName}-tab`).classList.remove('hidden');
-
-    // Add active class to the clicked tab button
-    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-}
-
-// Set the default tab to Robot Configuration
-document.addEventListener('DOMContentLoaded', () => {
-    switchTab('robot-config');
-});
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie('csrftoken');
-
 document.getElementById('pepperForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const formData = new FormData(this);
-    
+    event.preventDefault();  // Prevent the default form submission
+
+    // Create an object to store the form data
+    const formData = {
+        robot_ip: document.getElementById('robot_ip').value,
+        network_interface: document.getElementById('network_interface').value,
+        language: document.querySelector('input[name="language"]:checked').value,
+    };
+
+    // Send the JSON data to the server using fetch
     fetch('/submit/', {
         method: 'POST',
-        body: formData,
         headers: {
-            'X-CSRFToken': csrftoken,  // Include the CSRF token in the headers
+            'Content-Type': 'application/json',  // Set the content type to JSON
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,  // Include the CSRF token
         },
+        body: JSON.stringify(formData),  // Convert the object to a JSON string
     })
     .then(response => {
         if (response.ok) {
-            return response.json();
+            return response.json();  // Parse the JSON response
         } else {
             throw new Error('Network response was not ok.');
         }
     })
     .then(data => {
+        // Handle the response data
         if (data.redirect_url) {
-            window.location.href = data.redirect_url;
+            window.location.href = data.redirect_url;  // Redirect to the provided URL
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error:', error);  // Log any errors
     });
 });

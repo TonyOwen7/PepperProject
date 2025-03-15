@@ -21,11 +21,12 @@ class RobotProcessManager:
         self.current_robot_ip = nao_ip
         self.current_network_interface = network_interface
 
-        # Start naoqi_driver
-        self.start_naoqi_driver()
-
+       
         # Start pepper_dcm_bringup
         self.start_pepper_dcm_bringup()
+
+        # Start naoqi_driver
+        self.start_naoqi_driver()
 
         # Start the monitoring thread
         self.monitor_running = True

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Speech
 from .forms import SpeechForm
-from control.module.pepper_speach.pepper_speach import pepper_speak
+# from control.module.pepper_speach.pepper_speach import pepper_speak
 
 @login_required
 def speech_list(request):
@@ -45,4 +45,4 @@ def delete_speech(request, speech_id):
 @login_required
 def play_speech(request, speech_id):
     speech = get_object_or_404(Speech, id=speech_id, user=request.user)
-    pepper_speak(speech.content)
+    # pepper_speak(speech.content)
