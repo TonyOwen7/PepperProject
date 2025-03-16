@@ -69,6 +69,13 @@ body {
     margin: 50px 0;
 }
 
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+}
+
 /* Messages Styles */
 .messages {
     margin-bottom: 20px;
@@ -90,46 +97,6 @@ body {
     background-color: #e8f5e9;
     color: #2e7d32;
     border: 1px solid #2e7d32;
-}
-
-/* Form Styles */
-form {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="email"]:focus,
-.form-group input[type="password"]:focus {
-    border-color: #0078d4;
-    outline: none;
 }
 
 .error {

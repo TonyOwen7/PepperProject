@@ -1,23 +1,15 @@
 const mapElement = document.getElementById('map');
-
 const matrices = JSON.parse(mapElement.getAttribute('data-matrices'));
-const number_of_floors = JSON.parse(mapElement.getAttribute('data-number-of-floors'));
-
 const mapId = parseInt(mapElement.getAttribute('data-id'));
-// let rooms = JSON.parse(mapElement.getAttribute('data-rooms'))
+const rooms = JSON.parse(mapElement.getAttribute('data-rooms'));
 
-const  rooms = JSON.parse(mapElement.getAttribute('data-rooms'));
-   
-console.log('Matrices:', matrices);  // Debugging: Log the matrices
-console.log('Map ID:', mapId);       // Debugging: Log the map ID
-console.log('Rooms:', rooms);        // Debugging: Log the rooms
-document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
-
-let currentMatrixIndex = 0; // Track the currently displayed matrix
+let currentMatrixIndex = 0;
 let rows = matrices[0].length;
 let cols = matrices[0][0].length;
+let selectedValue = 2;
 
-let selectedValue = 2; // Default to room
+document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
+
 
 // Render the current matrix
 function renderMap() {
@@ -60,14 +52,6 @@ document.getElementById('next-matrix').addEventListener('click', () => {
     }
 });
 
-function addMatrix() {
-    const newMatrix = Array.from({ length: rows }, () => Array(cols).fill(0));
-    matrices.push(newMatrix);
-    currentMatrixIndex = matrices.length - 1;
-    document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
-    renderMap();
-    updateCarousel();
-}
 
 function removeMatrix() {
     if (matrices.length > 1) {
@@ -117,6 +101,8 @@ function addMatrix() {
     currentMatrixIndex = matrices.length - 1;
     renderMap();
     updateCarousel();
+    document.getElementById('number_of_floors').textContent = `Number of floors: ${matrices.length}`;
+
 }
 
 // Remove the current matrix (floor)

@@ -36,73 +36,78 @@ def clearup_sequence_of_moves(commands):
 def upgrade_position_and_direction(path):
     global pepper_position, pepper_direction
     commands = []
-    for step in path:
-        if pepper_direction[0] == "up":
-            if step[0] < pepper_position[0]:
-                commands.append("avancer")
-            if step[0] > pepper_position[0]:
-                pepper_direction[0] = "bottom"
-                commands.append("demi-tour gauche")
-                commands.append("avancer")
-            if step[1] < pepper_position[1]:
-                pepper_direction[0] = "left"
-                commands.append("tourner à gauche")
-                commands.append("avancer")
-            if step[1] > pepper_position[1]:
-                pepper_direction[0] = "right"
-                commands.append("tourner à droite")
-                commands.append("avancer")
+    for i in range(path):
+        if i != 0 and path[i] == path[i - 1]:
+            if pepper_direction[0] == "up":
+                if path[i][1] < pepper_position[1]:
+                    commands.append("avancer")
+                if path[i][1] > pepper_position[1]:
+                    pepper_direction[0] = "bottom"
+                    commands.append("demi-tour gauche")
+                    commands.append("avancer")
+                if path[i][2] < pepper_position[2]:
+                    pepper_direction[0] = "left"
+                    commands.append("tourner à gauche")
+                    commands.append("avancer")
+                if path[i][2] > pepper_position[2]:
+                    pepper_direction[0] = "right"
+                    commands.append("tourner à droite")
+                    commands.append("avancer")
 
-        elif pepper_direction[0] == "bottom":
-            if step[0] < pepper_position[0]:
-                pepper_direction[0] = "up"
-                commands.append("demi-tour gauche")
-                commands.append("avancer")
-            if step[0] > pepper_position[0]:
-                commands.append("avancer")
-            if step[1] < pepper_position[1]:
-                pepper_direction[0] = "left"
-                commands.append("tourner à droite")
-                commands.append("avancer")
-            if step[1] > pepper_position[1]:
-                pepper_direction[0] = "right"
-                commands.append("tourner à gauche")
-                commands.append("avancer")
+            elif pepper_direction[0] == "bottom":
+                if path[i][1] < pepper_position[1]:
+                    pepper_direction[0] = "up"
+                    commands.append("demi-tour gauche")
+                    commands.append("avancer")
+                if path[i][1] > pepper_position[1]:
+                    commands.append("avancer")
+                if path[i][2] < pepper_position[2]:
+                    pepper_direction[0] = "left"
+                    commands.append("tourner à droite")
+                    commands.append("avancer")
+                if path[i][2] > pepper_position[2]:
+                    pepper_direction[0] = "right"
+                    commands.append("tourner à gauche")
+                    commands.append("avancer")
 
-        elif pepper_direction[0] == "left":
-            if step[0] < pepper_position[0]:
-                pepper_direction[0] = "up"
-                commands.append("tourner à droite")
-                commands.append("avancer")
-            if step[0] > pepper_position[0]:
-                pepper_direction[0] = "bottom"
-                commands.append("tourner à gauche")
-                commands.append("avancer")
-            if step[1] < pepper_position[1]:
-                commands.append("avancer")
-            if step[1] > pepper_position[1]:
-                pepper_direction[0] = "right"
-                commands.append("demi-tour gauche")
-                commands.append("avancer")
+            elif pepper_direction[0] == "left":
+                if path[i][1] < pepper_position[1]:
+                    pepper_direction[0] = "up"
+                    commands.append("tourner à droite")
+                    commands.append("avancer")
+                if path[i][1] > pepper_position[1]:
+                    pepper_direction[0] = "bottom"
+                    commands.append("tourner à gauche")
+                    commands.append("avancer")
+                if path[i][2] < pepper_position[2]:
+                    commands.append("avancer")
+                if path[i][2] > pepper_position[2]:
+                    pepper_direction[0] = "right"
+                    commands.append("demi-tour gauche")
+                    commands.append("avancer")
 
-        elif pepper_direction[0] == "right":
-            if step[0] < pepper_position[0]:
-                pepper_direction[0] = "up"
-                commands.append("tourner à gauche")
-                commands.append("avancer")
-            if step[0] > pepper_position[0]:
-                pepper_direction[0] = "bottom"
-                commands.append("tourner à droite")
-                commands.append("avancer")
-            if step[1] < pepper_position[1]:
-                pepper_direction[0] = "left"
-                commands.append("demi-tour gauche")
-                commands.append("avancer")
-            if step[1] > pepper_position[1]:
-                commands.append("avancer")
+            elif pepper_direction[0] == "right":
+                if path[i][1] < pepper_position[1]:
+                    pepper_direction[0] = "up"
+                    commands.append("tourner à gauche")
+                    commands.append("avancer")
+                if path[i][1] > pepper_position[1]:
+                    pepper_direction[0] = "bottom"
+                    commands.append("tourner à droite")
+                    commands.append("avancer")
+                if path[i][2] < pepper_position[2]:
+                    pepper_direction[0] = "left"
+                    commands.append("demi-tour gauche")
+                    commands.append("avancer")
+                if path[i][2] > pepper_position[2]:
+                    commands.append("avancer")
 
-        pepper_position[0] = step[0]
-        pepper_position[1] = step[1]
+            pepper_position[1] = path[i][1]
+            pepper_position[2] = path[i][2]
+        else:
+            commands.append("monter")
+            pepper_position[0] = path[i][0]
+
                                                   
     return commands
 
@@ -113,19 +118,16 @@ def guide(driver, chosen_location, myMap):
 
         if re.search(location_regex, chosen_location, re.IGNORECASE):
             floor, row, col = location_queries[location]
-            print(f"Location found: {location}, at row {row}, column {col}")
+            print(f"Location found: {location}, at floor {floor} row {row}, column {col}")
             location_found = True
-            paths = bfs(myMap, tuple(pepper_position), (floor, row, col))
-            shortest_path = paths[0]
+            path = bfs(myMap, tuple(pepper_position), (floor, row, col))
 
-            if shortest_path:
-                commands = upgrade_position_and_direction(shortest_path)
+            if path:
+                commands = upgrade_position_and_direction(path)
                 
                 commands = clearup_sequence_of_moves(commands)
-                print(commands)
-                # for command in commands:
-                    # move(driver, command[0], command[1])
+                for command in commands:
+                    move(driver, command[0], command[1])
             else:
                 print("Désolé, je ne peux pas atteindre cette destination.")
             break
-guide("test", "bibliothèque", "Accueil")

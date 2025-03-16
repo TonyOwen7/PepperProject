@@ -37,10 +37,8 @@ def edit_speech(request, speech_id):
 @login_required
 def delete_speech(request, speech_id):
     speech = get_object_or_404(Speech, id=speech_id, user=request.user)
-    if request.method == 'POST':
-        speech.delete()
-        return redirect('/speech/user_speeches')
-    return render(request, 'speech/speech_confirm_delete.html', {'speech': speech})
+    speech.delete()
+    return redirect('/speech/user_speeches')
 
 @login_required
 def play_speech(request, speech_id):

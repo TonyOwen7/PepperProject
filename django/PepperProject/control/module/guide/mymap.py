@@ -7,11 +7,11 @@ university_matrix = [
         [3, 1, 0, 1, 1, 2]
     ],
     [
-        [2, 0, 1, 2, 1, 0],
+        [2, 0, 1, 2, 1, 3],
         [0, 2, 0, 0, 1, 2],
         [1, 0, 2, 1, 1, 0],
         [2, 2, 0, 0, 2, 1],
-        [0, 1, 1, 2, 0, 2]
+        [3, 1, 1, 2, 0, 2]
     ]
 
 ]
@@ -26,19 +26,13 @@ location_queries = {
     "classe 4": (0, 3, 4),
     "bureau des enseignants": (0, 4, 5),
     "Accueil": (0, 0, 0),
+    "ascenseur": (1, 0, 5),
+    "escalier": (1, 4, 0),
     "bibliothèque": (1, 4, 5),
     "cafétéria": (1, 2, 3),
     "laboratoire 1": (1, 1, 2),
     "laboratoire 2": (1, 2, 0),
     "auditorium": (0, 3, 5),
-}
-
-
-DIRECTIONS = {
-    'down': (1, 0),
-    'up': (-1, 0),
-    'left': (0, -1),
-   'right': (0, 1),  
 }
 
 pepper_position = [0, 3, 1]
