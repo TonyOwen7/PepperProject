@@ -10,6 +10,11 @@ let selectedValue = 2;
 
 document.getElementById('number_of_floors').innerHTML = `Number of floors: ${matrices.length}`;
 
+function setCurrentMap(mapId) {
+    if (mapId) {
+        window.location.href = "{% url 'set_current_map' 0 %}".replace('0', mapId);
+    }
+}
 
 // Render the current matrix
 function renderMap() {
@@ -61,53 +66,131 @@ function removeMatrix() {
         updateCarousel();
     }
 }
+
 function handleCellClick(rowIndex, colIndex) {
-    if (selectedValue == 2) {
-      const roomName = prompt('Enter room name:');
-      if (roomName) {
-              console.log("in", roomName);
-
-        matrices[currentMatrixIndex][rowIndex][colIndex] = 2; // Mark as room
-        rooms[roomName] = [currentMatrixIndex, rowIndex, colIndex];
-      }
-    } else if (selectedValue == 3) {
-      // Adding stairs/doors
-      const type = prompt('Enter type (stairs/elevator):');
-      if (type && (type.toLowerCase() === 'stairs' || type.toLowerCase() === 'elevator')) {
-        matrices[currentMatrixIndex][rowIndex][colIndex] = 3; // Mark as stairs/doors
-        rooms[type] = [currentMatrixIndex, rowIndex, colIndex];
-      }
-    } else {
-      // Removing or updating a cell
-      if (matrices[currentMatrixIndex][rowIndex][colIndex] === 2 || matrices[currentMatrixIndex][rowIndex][colIndex] === 3) {
-        const roomName = Object.keys(rooms).find(
-          key => rooms[key][0] === currentMatrixIndex + 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
-        );
+    if (selectedValue === 2) {
+        // Adding a room
+        const roomName = prompt('Enter room name:');
         if (roomName) {
-          delete rooms[roomName]; // Remove the room or stairs/doors from the dictionary
+            matrices[currentMatrixIndex][rowIndex][colIndex] = 2; // Mark as room
+            rooms[roomName] = [currentMatrixIndex, rowIndex, colIndex];
         }
-      }
-      matrices[currentMatrixIndex][rowIndex][colIndex] = selectedValue; // Update the cell value
+    } else if (selectedValue === 3) {
+        // Adding stairs or elevators
+        const type = prompt('Enter type (stairs/elevator):');
+        if (type && (type.toLowerCase() === 'stairs' || type.toLowerCase() === 'elevator')) {
+            // Update the current floor
+            // matrices[currentMatrixIndex][rowIndex][colIndex] = 3; // Mark as stairs/doors
+            // rooms[type] = [currentMatrixIndex, rowIndex, colIndex];
+
+            // Update the next floor (if it exists)
+            if (currentMatrixIndex < (matrices.length - 1)) {
+                matrices[currentMatrixIndex + 1][rowIndex][colIndex] = 3; // Mark as stairs/doors on the next floor
+                rooms[`${type}_floor_${currentMatrixIndex + 2}`] = [currentMatrixIndex + 1, rowIndex, colIndex];
+            }
+
+            // Update the previous floor (if it exists)
+            if (currentMatrixIndex > 0) {
+                matrices[currentMatrixIndex - 1][rowIndex][colIndex] = 3; // Mark as stairs/doors on the previous floor
+                rooms[`${type}_floor_${currentMatrixIndex}`] = [currentMatrixIndex - 1, rowIndex, colIndex];
+            }
+        }
+    } else {
+        // Removing or updating a cell
+        if (matrices[currentMatrixIndex][rowIndex][colIndex] === 2 || matrices[currentMatrixIndex][rowIndex][colIndex] === 3) {
+            const roomName = Object.keys(rooms).find(
+                key => rooms[key][0] === currentMatrixIndex && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+            );
+            if (roomName) {
+                delete rooms[roomName]; // Remove the room or stairs/doors from the dictionary
+            }
+
+            // If it's stairs/elevators, remove them from the adjacent floors as well
+            if (matrices[currentMatrixIndex][rowIndex][colIndex] === 3) {
+                // Remove from the next floor (if it exists)
+                if (currentMatrixIndex < matrices.length - 1) {
+                    matrices[currentMatrixIndex + 1][rowIndex][colIndex] = 0; // Reset the cell on the next floor
+                    const nextFloorRoomName = Object.keys(rooms).find(
+                        key => rooms[key][0] === currentMatrixIndex + 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+                    );
+                    if (nextFloorRoomName) {
+                        delete rooms[nextFloorRoomName]; // Remove the stairs/doors from the next floor
+                    }
+                }
+
+                // Remove from the previous floor (if it exists)
+                if (currentMatrixIndex > 0) {
+                    matrices[currentMatrixIndex - 1][rowIndex][colIndex] = 0; // Reset the cell on the previous floor
+                    const prevFloorRoomName = Object.keys(rooms).find(
+                        key => rooms[key][0] === currentMatrixIndex - 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+                    );
+                    if (prevFloorRoomName) {
+                        delete rooms[prevFloorRoomName]; // Remove the stairs/doors from the previous floor
+                    }
+                }
+            }
+        }
+        matrices[currentMatrixIndex][rowIndex][colIndex] = selectedValue; // Update the cell value
     }
-    console.log(rooms)
 
+    console.log(rooms);
     renderMap();
-  }
-
-// Add a new matrix (floor)
+}
 function addMatrix() {
     const newMatrix = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
+
+    // Copy stairs/elevators from the previous floor to the new floor
+    if (matrices.length > 0) {
+        const previousMatrix = matrices[matrices.length - 1];
+        for (let rowIndex = 0; rowIndex < previousMatrix.length; rowIndex++) {
+            for (let colIndex = 0; colIndex < previousMatrix[rowIndex].length; colIndex++) {
+                if (previousMatrix[rowIndex][colIndex] === 3) {
+                    newMatrix[rowIndex][colIndex] = 3; // Copy stairs/elevators to the new floor
+                }
+            }
+        }
+    }
+
     matrices.push(newMatrix);
     currentMatrixIndex = matrices.length - 1;
     renderMap();
     updateCarousel();
     document.getElementById('number_of_floors').textContent = `Number of floors: ${matrices.length}`;
-
 }
 
-// Remove the current matrix (floor)
 function removeMatrix() {
     if (matrices.length > 1) {
+        // Check if the current floor has stairs/elevators that need to be removed from adjacent floors
+        const currentMatrix = matrices[currentMatrixIndex];
+        for (let rowIndex = 0; rowIndex < currentMatrix.length; rowIndex++) {
+            for (let colIndex = 0; colIndex < currentMatrix[rowIndex].length; colIndex++) {
+                if (currentMatrix[rowIndex][colIndex] === 3) {
+                    // Remove from the next floor (if it exists)
+                    if (currentMatrixIndex < matrices.length - 1) {
+                        matrices[currentMatrixIndex + 1][rowIndex][colIndex] = 0; // Reset the cell on the next floor
+                        const nextFloorRoomName = Object.keys(rooms).find(
+                            key => rooms[key][0] === currentMatrixIndex + 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+                        );
+                        if (nextFloorRoomName) {
+                            delete rooms[nextFloorRoomName]; // Remove the stairs/doors from the next floor
+                        }
+                    }
+
+                    // Remove from the previous floor (if it exists)
+                    if (currentMatrixIndex > 0) {
+                        matrices[currentMatrixIndex - 1][rowIndex][colIndex] = 0; // Reset the cell on the previous floor
+                        const prevFloorRoomName = Object.keys(rooms).find(
+                            key => rooms[key][0] === currentMatrixIndex - 1 && rooms[key][1] === rowIndex && rooms[key][2] === colIndex
+                        );
+                        if (prevFloorRoomName) {
+                            delete rooms[prevFloorRoomName]; // Remove the stairs/doors from the previous floor
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove the current floor
         matrices.splice(currentMatrixIndex, 1);
         currentMatrixIndex = Math.min(currentMatrixIndex, matrices.length - 1);
         renderMap();

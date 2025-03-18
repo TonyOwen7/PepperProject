@@ -389,3 +389,5 @@ button:hover {
   .floor.moving-to-bottom {
     animation: moveToBottom 0.5s forwards;
   }
+
+  

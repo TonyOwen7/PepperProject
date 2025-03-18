@@ -256,6 +256,7 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
+    
 }
 
 .edit-btn:hover {
@@ -463,4 +464,20 @@ form {
 
 .delete-btn:hover {
     background: #4caf9a;
+}
+
+.robot-selector
+{
+    text-align: center;
+}
+
+.robot-selector label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.robot-selector select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }

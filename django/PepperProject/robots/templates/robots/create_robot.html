@@ -6,7 +6,6 @@
     <form method="post">
         {% csrf_token %}
         
-        <!-- Render each form field manually -->
         <div class="form-group">
             <label for="{{ form.name.id_for_label }}">Robot Name</label>
             {{ form.name }}
@@ -39,6 +38,32 @@
             {% endif %}
         </div>
 
+        <div class="form-group coords-container">
+            <div class="coords-item">
+                <label for="{{ form.floor.id_for_label }}">Floor</label>
+                {{ form.floor }}
+            </div>
+            <div class="coords-item">
+                <label for="{{ form.row.id_for_label }}">Row</label>
+                {{ form.row }}
+            </div>
+            <div class="coords-item">
+                <label for="{{ form.column.id_for_label }}">Column</label>
+                {{ form.column }}
+            </div>
+           
+        </div>
+        
+
+        <div class="form-group">
+            <label for="{{ form.direction.id_for_label }}">Direction</label>
+            {{ form.direction }}
+            {% if form.direction.errors %}
+                <div class="error">{{ form.direction.errors }}</div>
+            {% endif %}
+        </div>
+
+       
         <button type="submit" class="submit-btn">Save</button>
     </form>
     <a href="{% url 'user_robots' %}" class="back-link">Back to my robots</a>

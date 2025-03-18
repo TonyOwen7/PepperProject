@@ -12,19 +12,17 @@ def set_current_map(request, map_id):
     """
     Sets the selected map as the current map for the user.
     """
-    if request.method == "POST":
-        user_maps = Map.objects.filter(user=request.user)
+    user_maps = Map.objects.filter(user=request.user)
 
-        # Unset current flag for all maps
-        user_maps.update(is_current=False)
+    # Unset current flag for all maps
+    user_maps.update(is_current=False)
+    
+    # Set the selected map as current
+    selected_map = get_object_or_404(Map, id=map_id, user=request.user)
+    selected_map.is_current = True
+    selected_map.save()
 
-        # Set the selected map as current
-        selected_map = get_object_or_404(Map, id=map_id, user=request.user)
-        selected_map.is_current = True
-        selected_map.save()
-
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False}, status=400)
+    return redirect('my_maps')
 
 def read_map(file_path):
     """

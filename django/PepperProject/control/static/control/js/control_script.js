@@ -43,6 +43,7 @@ document.querySelector('.destination-button').addEventListener('click', function
 
 // Function to send move command
 function sendMove(move) {
+    console.log(move)
     fetch('/move/', {
         method: 'POST',
         headers: {
@@ -101,6 +102,7 @@ function sendQuestion() {
 
 // Function to send speech
 function sendSpeech() {
+    
     const input = document.getElementById('speech-input');
     const text = input.value.trim();
     if (text) {

@@ -32,11 +32,11 @@ language = "fr"
 
 def robot_configuration(request):
     return render(request, 'control/form.html')
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import json
 
-@login_required
 def control_page(request):
     if request.user.is_authenticated:
         # Fetch the user's current map
@@ -98,27 +98,26 @@ from django.views.decorators.csrf import csrf_exempt  # Only use this for debugg
 
 # @csrf_exempt  # Uncomment this line ONLY for debugging to bypass CSRF protection
 def submit_robot_data(request):
-    if request.method == 'POST':
-        data = request.POST
-        robot_ip = data.get('robot_ip')
-        network_interface = data.get('network_interface')
-        language = data.get('language')
-        
-        # Process the data (e.g., start the robot process)
-        robot_process_manager.start(robot_ip, network_interface)
+    data = json.loads(request.body)        
+    robot_ip = data.get('robot_ip')
+    network_interface = data.get('network_interface')
+    language = data.get('language')
 
-        return JsonResponse({
-            'redirect_url': '/control/',
-            'language': language,
-        })
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    print(language)
+    
+    # Process the data (e.g., start the robot process)
+    robot_process_manager.start(robot_ip, network_interface)
+    return JsonResponse({
+        'redirect_url': '/control',
+        'language': language,
+    })
     
 def handle_move(request):
+   
     if request.method == 'POST':
-        data = request.POST
+        data = json.loads(request.body)        
         command_move = data.get('command_move')
-
+        print(command_move)
         if command_move:
             move("pepper_dcm_bringup", command_move)
             return JsonResponse({'response': 'Le robot est en train de se déplacer'})
@@ -127,7 +126,7 @@ def handle_move(request):
 
 def handle_guiding(request):
     if request.method == 'POST':
-        data = request.POST
+        data = json.loads(request.body)        
         location = data.get('destination')
 
         if location:
@@ -138,11 +137,11 @@ def handle_guiding(request):
 
 def handle_question(request):
     if request.method == 'POST':
-        data = request.POST
+        data = json.loads(request.body)        
         question = data.get('question')
         language = data.get('language')
-        
-        if question:
+
+        if question != "":
             response = wiki_response(question, language)
             response = response["text"]
             pepper_speak(response)
@@ -152,7 +151,7 @@ def handle_question(request):
 
 def handle_speech(request):
     if request.method == 'POST':
-        data = request.POST
+        data = json.loads(request.body)        
         speech = data.get('speech')
         
         if speech:
