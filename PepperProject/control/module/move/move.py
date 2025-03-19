@@ -5,7 +5,7 @@
 # from geometry_msgs.msg import Twist
 import sys
 import time
-# from mymap import DIRECTIONS, pepper_position, pepper_direction
+from mymap import  pepper_position, pepper_direction
 
 def move(driver, command_name, duration=None):
     if duration is None:

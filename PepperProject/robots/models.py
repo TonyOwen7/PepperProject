@@ -33,9 +33,6 @@ class Robot(models.Model):
     # Is current robot
     is_current = models.BooleanField(default=False)
     
-    # Is temporary robot (for non-logged in users)
-    is_temporary = models.BooleanField(default=False)
-
     def __str__(self):
         return self.name
     

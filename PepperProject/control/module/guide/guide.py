@@ -11,7 +11,7 @@ sys.path.append(mymap_path)
 sys.path.append(shortest_path_path)
 sys.path.append(search_pattern_path)
 
-# from move import *
+from move import *
 from mymap import university_matrix, location_queries, pepper_direction, pepper_position
 from shortest_path import *
 from search_pattern import *
@@ -111,8 +111,12 @@ def upgrade_position_and_direction(path):
                                                   
     return commands
 
-def guide(driver, chosen_location, myMap):
+def guide(driver, chosen_location, myMap, robot=None):
     global university_matrix, location_queries, pepper_position, pepper_direction
+    if robot != None:
+        pepper_position = robot.position 
+        pepper_direction = robot.direction 
+
     for location in location_queries:
         location_regex = re.sub(r"\s+", r"\\s+", location)
 

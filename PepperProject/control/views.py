@@ -4,6 +4,7 @@ import sys
 import os
 import json
 from map.models import Map
+from robots.models import Robot
 
 
 # Get the base directory of the project
@@ -110,6 +111,9 @@ def submit_robot_data(request):
             # Debugging: Print the extracted data
             print(f"GET request received with: robot_ip={robot_ip}, network_interface={network_interface}, language={language}")
 
+            if not robot_ip or not network_interface or not language:
+                return JsonResponse({'error': 'Missing required fields: robot_ip, network_interface, or language'}, status=400)
+
             robot_process_manager.start(robot_ip, network_interface)  # Uncomment if needed
 
             return redirect("/control/")
@@ -123,6 +127,9 @@ def submit_robot_data(request):
 
             # Debugging: Print the extracted data
             print(f"POST request received with: robot_ip={robot_ip}, network_interface={network_interface}, language={language}")
+            
+            if not robot_ip or not network_interface or not language:
+                return JsonResponse({'error': 'Missing required fields: robot_ip, network_interface, or language'}, status=400)
 
             robot_process_manager.start(robot_ip, network_interface)  # Uncomment if needed
 
@@ -131,20 +138,13 @@ def submit_robot_data(request):
                 'robot_ip': robot_ip,
                 'network_interface': network_interface,
                 'language': language,
+                'redirect_url' : '/control',
             })
 
 
         else:
             # Handle unsupported methods
             return JsonResponse({'error': 'Unsupported request method'}, status=405)
-
-        # Validate required fields
-        if not robot_ip or not network_interface or not language:
-            return JsonResponse({'error': 'Missing required fields: robot_ip, network_interface, or language'}, status=400)
-
-        # Process the data (e.g., start the robot process)
-
-        # Return a success response
         
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
@@ -177,8 +177,8 @@ def handle_guiding(request):
             location = data.get('location')
 
             if location:
-                print(f"Destination: {location}")
-                guide("pepper_dcm_bringup", location)  # Uncomment if needed
+                current_robot = get_object_or_404(Robot, user=request.user, is_current=True)
+                guide("pepper_dcm_bringup", location, current_robot)  # Uncomment if needed
                 return JsonResponse({'message': 'Le robot est en train de se déplacer vers la destination'})
             else:
                 return JsonResponse({'message': 'Aucune commande n\'a été donnée'}, status=400)
@@ -199,7 +199,7 @@ def handle_question(request):
             if question and language:
                 response = wiki_response(question, language)  # Replace with your logic
                 response_text = response.get("text", "No response found.")
-                # pepper_speak(response_text)  # Uncomment if needed
+                pepper_speak(response_text)  # Uncomment if needed
                 return JsonResponse({'message': response_text})
             else:
                 return JsonResponse({'message': 'Aucune question n\'a été posée'}, status=400)
