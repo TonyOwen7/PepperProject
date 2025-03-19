@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control your Pepper - Robot Control</title>
+    <link rel="stylesheet" href="{% static 'control/css/control_style.css' %}">
+
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div id="data" sata-language="{{ language }}" data-rooms="{{ rooms }}"></div>
+
+    <header class="header">
+        <h1>Control your Pepper</h1>
+        <nav class="header-nav">
+            {% if user.is_authenticated %}
+                <a href="{% url 'robot_configuration' %}" class="nav-link">Robot configuration</a>
+                <a href="{% url 'user_maps' %}" class="nav-link">my maps</a>
+                <a href="{% url 'user_robots' %}" class="nav-link">my robots</a>
+                <a href="{% url 'create_robot' %}" class="nav-link">Add Robot</a>
+                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+                <a href="{% url 'register' %}" class="nav-link">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+
+    <div class="control">
+        
+        <h1>Control Your Pepper Robot</h1>
+
+        <div class="joystick-container">
+            <div class="joystick-row">
+                <button onclick="sendMove('avancer vers la gauche')" class="joystick-button">↖</button>
+                <button onclick="sendMove('avancer')" class="joystick-button">↑</button>
+                <button onclick="sendMove('avancer vers la droite')" class="joystick-button">↗</button>
+            </div>
+            <div class="joystick-row">
+                <button onclick="sendMove('aller à gauche')" class="joystick-button">←</button>
+                <button onclick="sendMove('stop')" class="joystick-button">⏹</button>
+                <button onclick="sendMove('aller à droite')" class="joystick-button">→</button>
+            </div>
+            <div class="joystick-row">
+                <button onclick="sendMove('reculer vers la gauche')" class="joystick-button">↙</button>
+                <button onclick="sendMove('reculer')" class="joystick-button">↓</button>
+                <button onclick="sendMove('reculer vers la droite')" class="joystick-button">↘</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="sendMove('tourner à gauche')" class="action-button">↺</button>
+            <button onclick="sendMove('tourner à droite')" class="action-button">↻</button>
+            <button onclick="sendMove('demi-tour gauche')" class="action-button">↺ 180°</button>
+            <button onclick="sendMove('demi-tour droit')" class="action-button">↻ 180°</button>
+        </div>
+    </div>
+
+    <!-- Input Zone Trigger -->
+    <div class="text-input-container">
+        <button class="text-input-icon" onclick="toggleInputZone()">💬</button>
+        <div class="input-zone hidden">
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('question')">Ask a question</button>
+                <button class="tab-button" onclick="switchTab('speak')">Make Pepper talk</button>
+            </div>
+
+            <div class="tab-content" id="question-tab">
+                <textarea id="question-input" placeholder="Ask Pepper a question..." rows="3"></textarea>
+                <button class="send-question">Send</button>
+            </div>
+
+            <div class="tab-content hidden" id="speak-tab">
+                <textarea id="speech-input" placeholder="Write what Pepper will say..." rows="3"></textarea>
+                <button class="send-speech">Send</button>
+            </div>
+        </div>
+       </div>
+
+    {% csrf_token %}
+    <div class="destination-container">
+        <div class="destination-title">Destinations</div>
+        <input list="destinations" id="destination-input" placeholder="Choose your destination..." class="input">
+        <datalist id="destinations">
+            <!-- Dynamically populate options based on the rooms dictionary -->
+            {% for room_name in rooms.keys %}
+                <option value="{{ room_name }}"></option>
+            {% endfor %}
+        </datalist>
+       
+
+        <button class="destination-button">Send</button>
+       
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="footer-logo">Pepper Control</span>
+            <span class="footer-divider">|</span>
+            <span>&copy; 2025 High-Tech Interface MBTO</span>
+        </div>
+     
+    </footer>
+
+    
+    <script src="{% static 'control/js/control_script.js' %}"></script>
+
+<select id="room-dropdown">
+    <option value="">Sélectionnez une salle</option>
+</select>
+
+<script>
+    // Parse the JSON data
+
+    // Dynamically populate the dropdown
+    const dropdown = document.getElementById('room-dropdown');
+    for (const room_name of Object.keys(rooms)) {
+        const option = document.createElement('option');
+        option.value = room_name;
+        option.textContent = room_name;
+        dropdown.appendChild(option);
+    }
+</script>
+
+</body>
+</html>

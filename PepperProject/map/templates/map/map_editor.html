@@ -1,0 +1,65 @@
+{% extends 'robots/base.html' %}
+{% load static %}
+
+{% block title %}Map Editor - Pepper Control{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'map/css/map_editor.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="width: min-content;margin: auto;">
+    <h1>Map Editor</h1>
+    <h2 style="padding: 20px 0;" id="number_of_floors">Number of Floors:</h2>  <!-- Display the number of matrices -->    <div class="carousel">
+      <button id="prev-matrix">Previous</button>
+      <span id="matrix-index">Floor 1</span>
+      <button id="next-matrix">Next</button>
+      <button onclick="addMatrix()">Add floor</button>
+      <button onclick="removeMatrix()">Remove Matrix</button>
+    </div>
+    <div id="map" data-matrices="{{ matrices_json }}" data-id="{{ map.id }}" data-rooms = "{{ rooms }}"></div>
+    <div class="color-legend">
+      <div class="legend-item" data-value="0">
+        <div class="color-box empty"></div>
+        <span>Empty</span>
+      </div>
+      <div class="legend-item" data-value="1">
+        <div class="color-box obstacle"></div>
+        <span>Obstacle</span>
+      </div>
+      <div class="legend-item" data-value="2">
+        <div class="color-box room"></div>
+        <span>Room</span>
+      </div>
+      <div class="legend-item" data-value="3">
+        <div class="color-box stairs"></div>
+        <span>Stairs/Doors</span>
+      </div>
+    </div>
+    <div class="controls">
+      <button onclick="addRow()">Add Row</button>
+      <button onclick="addColumn()">Add Column</button>
+      <button onclick="removeRow()">Remove Row</button>
+      <button onclick="removeColumn()">Remove Column</button>
+    </div>
+    <form id="save-map-form" method="post" action="{% url 'save-map' %}" style="margin-top: 40px;">
+      {% csrf_token %}
+      <input type="hidden" id="map-matrices" name="matrices">
+      <input type="hidden" id="map-rows" name="rows">
+      <input type="hidden" id="map-cols" name="cols">
+      <input type="hidden" id="map-rooms" name="rooms">
+      <input type="hidden" id="map-id" name="map_id" value="{{ map.id }}">
+      <div class="form-group">
+        <label for="map-name">Map Name:</label>
+        <input type="text" id="map-name" name="name" value="{{ map.name }}" required>
+      </div>
+      <button type="submit" class="submit-btn">Save Map</button>
+    </form>
+    
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+
+  <script src="{% static 'map/js/script.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,164 @@
+.map-list {
+  margin-top: 50px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style for each map item */
+.map-item {
+  background: #ffffff;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #2c3e50;
+  font-family: 'Orbitron', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.map-item strong {
+  font-size: 24px;
+  color: #3498db;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.map-item p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #34495e;
+}
+
+.map-item .label {
+  font-weight: bold;
+  color: #3498db;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.map-item .value {
+  color: #2c3e50;
+  font-weight: 600;
+  color: #35dca4;
+}
+
+.map-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.edit-btn {
+  background: #25f312;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #28bb1b;
+}
+
+.delete-btn {
+  background: #3ce7c2;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #4caf9a;
+}
+
+/* myapp/static/map/css/styles.css */
+
+/* Map Selector */
+.map-selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.map-selector label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.map-selector select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Create New Map Button */
+.create-map {
+  margin-bottom: 20px;
+}
+
+.create-btn {
+  background: #0078d4;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.create-btn:hover {
+  background: #0056b3;
+}
+
+/* Map List */
+.map-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.map-item {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.map-item strong {
+  font-size: 1.2em;
+  color: #333;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.map-item p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.9em;
+}
+
+.map-actions {
+  margin-top: 10px;
+}
+
+
