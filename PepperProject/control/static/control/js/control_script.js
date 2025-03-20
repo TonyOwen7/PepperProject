@@ -4,8 +4,11 @@ const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 // Get language and rooms data from the hidden div
 const data = document.getElementById('data');
 const language = data.getAttribute("data-language");
-const rooms = data.getAttribute("data-rooms");
-// Toggle input zone visibility
+const rooms = JSON.parse(data.getAttribute("data-rooms_dumps"));
+console.log(rooms)
+
+// Toggle input zone 
+// visibility
 function toggleInputZone() {
     const inputZone = document.querySelector('.input-zone');
     inputZone.classList.toggle('hidden');

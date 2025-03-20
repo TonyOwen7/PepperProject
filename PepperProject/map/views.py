@@ -129,8 +129,8 @@ import json
 
 from django.shortcuts import redirect
 @login_required
-@csrf_exempt
 def save_map(request):
+    print("save")
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method. POST required.'}, status=405)
 
@@ -146,13 +146,14 @@ def save_map(request):
             map_name = data.get('name')
         else:
             # Parse form data
-            matrices = json.loads(request.POST.get('matrices', '[]'))
-            rows = int(request.POST.get('rows', 4))
-            cols = int(request.POST.get('cols', 4))
-            rooms = json.loads(request.POST.get('rooms')) # Get the rooms dictionary
-            map_id = request.POST.get('map_id')
-            map_name = request.POST.get('name')
-
+            data = json.loads(request.body)
+            matrices = data.get('matrices')
+            rows = data.get('rows')
+            cols = data.get('cols')
+            rooms = data.get('rooms')  # Get the rooms dictionary
+            map_id = data.get('id')
+            map_name = data.get('name')
+        print("[save] rooms: ", rooms)
         # Validate required fields
         if not matrices or not map_id or not map_name:
             return JsonResponse({'error': 'Matrices data, map ID, or map name is missing.'}, status=400)

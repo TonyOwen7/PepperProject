@@ -2,6 +2,7 @@ const mapElement = document.getElementById('map');
 const matrices = JSON.parse(mapElement.getAttribute('data-matrices'));
 const mapId = parseInt(mapElement.getAttribute('data-id'));
 const rooms = mapElement.getAttribute('data-rooms');
+console.log(rooms)
 
 let currentMatrixIndex = 0;
 let rows = matrices[0].length;
@@ -64,6 +65,7 @@ function handleCellClick(rowIndex, colIndex) {
             matrices[currentMatrixIndex][rowIndex][colIndex] = 2; // Mark as room
             rooms[roomName] = [currentMatrixIndex, rowIndex, colIndex];
         }
+        console.log(rooms)
     } else if (selectedValue === 3) {
         // Adding stairs or elevators
         const type = prompt('Enter type (stairs/elevator):');
@@ -216,9 +218,10 @@ document.getElementById('save-map-form').addEventListener('submit', function (ev
         rooms: rooms,
         name: document.getElementById('map-name').value,
     };
+    console.log("save")
 
     // Send the data as JSON
-    fetch(this.action, {
+    fetch("/map/save_map/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -40,6 +40,9 @@ def control_page(request):
     if request.user.is_authenticated:
         # Fetch the user's current map
         current_map = get_object_or_404(Map, user=request.user, is_current=True)
+        if not current_map:
+            current_map = get_object_or_404(Map, user=request.user).first()          
+        
         if current_map:
             matrices = current_map.matrices  # Use the matrices field
             rooms = current_map.rooms  # Use the rooms field
@@ -90,6 +93,8 @@ def control_page(request):
         { 
             'matrices':json.dumps(matrices),  
             'rooms':rooms,  
+            'rooms_dumps':json.dumps(rooms),  
+
         }
     )
 
@@ -138,7 +143,7 @@ def submit_robot_data(request):
                 'robot_ip': robot_ip,
                 'network_interface': network_interface,
                 'language': language,
-                'redirect_url' : '/control',
+                'redirect_url' : '/control/',
             })
 
 
