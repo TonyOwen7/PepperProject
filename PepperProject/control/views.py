@@ -183,7 +183,11 @@ def handle_guiding(request):
 
             if location:
                 current_robot = get_object_or_404(Robot, user=request.user, is_current=True)
-                guide("pepper_dcm_bringup", location, current_robot)  # Uncomment if needed
+                current_map = get_object_or_404(Map, user=request.user, is_current=True)
+                rooms = {}
+                for key, value in current_map.rooms.items():
+                    rooms[key] =  value
+                guide("pepper_dcm_bringup", location, current_map.matrices, current_robot, rooms)  # Uncomment if needed
                 return JsonResponse({'message': 'Le robot est en train de se déplacer vers la destination'})
             else:
                 return JsonResponse({'message': 'Aucune commande n\'a été donnée'}, status=400)

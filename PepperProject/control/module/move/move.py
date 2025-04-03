@@ -3,13 +3,12 @@
 
 # import rospy
 # from geometry_msgs.msg import Twist
+
 import sys
 import time
 from mymap import  pepper_position, pepper_direction
 
-def move(driver, command_name, duration=None):
-    if duration is None:
-        duration = 0.5
+def move(driver, command_name, duration=0.5):
 
     naoqi_commands = {
         "stop": {'linear': [0.0, 0.0, 0.0], 'angular': [0.0, 0.0, 0.0], 'topic': '/cmd_vel', 'direction': 'stop'},
@@ -86,3 +85,71 @@ def move(driver, command_name, duration=None):
         rate.sleep()
     
 
+def move_pepper(driver, command_name, duration=0.5):
+    """Envoie une commande de mouvement à Pepper via rostopic pub"""
+    
+    # Dictionnaire complet des commandes de mouvement
+    movement_commands = {
+        "naoqi_driver": {
+            "stop": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer": "'{linear: {x: 0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer": "'{linear: {x: -0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "aller à gauche": "'{linear: {x: 0.0, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "aller à droite": "'{linear: {x: 0.0, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer vers gauche": "'{linear: {x: 0.5, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer vers droite": "'{linear: {x: 0.5, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer vers gauche": "'{linear: {x: -0.5, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer vers droite": "'{linear: {x: -0.5, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "tourner à gauche": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.7854}}'",
+            "tourner à droite": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: -0.7854}}'",
+            "demi-tour gauche": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.5706}}'",
+            "demi-tour droit": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: -1.5706}}'"
+        },
+        "pepper_dcm_bringup": {
+            "stop": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer": "'{linear: {x: 0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer": "'{linear: {x: -0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "aller à gauche": "'{linear: {x: 0.0, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "aller à droite": "'{linear: {x: 0.0, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer vers gauche": "'{linear: {x: 0.5, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "avancer vers droite": "'{linear: {x: 0.5, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer vers gauche": "'{linear: {x: -0.5, y: 0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "reculer vers droite": "'{linear: {x: -0.5, y: -0.5, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'",
+            "tourner à gauche": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.7854}}'",
+            "tourner à droite": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: -0.7854}}'",
+            "demi-tour gauche": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.5706}}'",
+            "demi-tour droit": "'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: -1.5706}}'"
+        }
+    }
+
+    # Sélection du topic selon le driver
+    topic = "/cmd_vel" if driver == "naoqi_driver" else "/pepper_dcm/cmd_moveto"
+    
+    if driver not in movement_commands or command_name not in movement_commands[driver]:
+        raise ValueError(f"Commande {command_name} non valide pour le driver {driver}")
+
+    # Construction de la commande rostopic
+    command = (f"rostopic pub -1 {topic} geometry_msgs/Twist "
+              f"{movement_commands[driver][command_name]}")
+
+    try:
+        # Exécution de la commande
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        
+        # Attendre la fin du mouvement si une durée est spécifiée
+        if duration > 0:
+            time.sleep(duration)
+            stop_command = (f"rostopic pub -1 {topic} geometry_msgs/Twist "
+                          f"{movement_commands[driver]['stop']}")
+            subprocess.run(stop_command, shell=True)
+            
+        return process
+        
+    except Exception as e:
+        print(f"Erreur lors de l'exécution: {e}")
+     

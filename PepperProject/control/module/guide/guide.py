@@ -36,8 +36,8 @@ def clearup_sequence_of_moves(commands):
 def upgrade_position_and_direction(path):
     global pepper_position, pepper_direction
     commands = []
-    for i in range(path):
-        if i != 0 and path[i] == path[i - 1]:
+    for i in range(len(path)):
+        if i == 0 or path[i][0] == path[i - 1][0]:
             if pepper_direction[0] == "up":
                 if path[i][1] < pepper_position[1]:
                     commands.append("avancer")
@@ -111,27 +111,62 @@ def upgrade_position_and_direction(path):
                                                   
     return commands
 
-def guide(driver, chosen_location, myMap, robot=None):
-    global university_matrix, location_queries, pepper_position, pepper_direction
-    if robot != None:
-        pepper_position = robot.position 
-        pepper_direction = robot.direction 
+def guide_aux(path):
+    commands = upgrade_position_and_direction(path)
+    commands = clearup_sequence_of_moves(commands)
 
-    for location in location_queries:
-        location_regex = re.sub(r"\s+", r"\\s+", location)
+    go_up_to_the_next_floor = False
+    i = 0
+    while i < len (commands) and not go_up_to_the_next_floor:
+        if commands[i][0] == "monter":
+            go_up_to_the_next_floor = True
+        move("pepper_dcm_bringup", commands[i][0], commands[i][1])
+        i+=1
+    if go_up_to_the_next_floor:
+        pepper_speak("Je ne peux plus monter, je vais vous guider vers votre destination. Maintenant, prenez l'ascenseur")
 
-        if re.search(location_regex, chosen_location, re.IGNORECASE):
-            floor, row, col = location_queries[location]
-            print(f"Location found: {location}, at floor {floor} row {row}, column {col}")
-            location_found = True
-            path = bfs(myMap, tuple(pepper_position), (floor, row, col))
-
-            if path:
-                commands = upgrade_position_and_direction(path)
-                
-                commands = clearup_sequence_of_moves(commands)
-                for command in commands:
-                    move(driver, command[0], command[1])
+        while i < len (commands):
+            if commands[i][0] == "monter":
+                pepper_speak("Prendre l'ascenseur")
             else:
-                print("Désolé, je ne peux pas atteindre cette destination.")
-            break
+                pepper_speak(commands[i][0])
+            i+=1
+            
+def guide(driver, chosen_location, myMap=None, robot=None, myLocationQueries=None):
+    global university_matrix, location_queries, pepper_position, pepper_direction
+
+    if robot:
+        pepper_position = [robot.floor, robot.row, robot.column] 
+        pepper_direction = [robot.direction] 
+
+    if not robot:
+        for location in location_queries:
+            location_regex = re.sub(r"\s+", r"\\s+", location)
+
+            if re.search(location_regex, chosen_location, re.IGNORECASE):
+                floor, row, col = location_queries[location]
+                print(f"Location found: {location}, at floor {floor} row {row}, column {col}")
+                location_found = True
+                path = bfs(university_matrix, tuple(pepper_position), (floor, row, col))
+
+                if path:
+                    guide_aux(path)  
+                else:
+                    print("Désolé, je ne peux pas atteindre cette destination.")
+                break
+    else:
+        for location in myLocationQueries.keys():
+            print(location)
+            location_regex = re.sub(r"\s+", r"\\s+", location)
+
+            if re.search(location_regex, chosen_location, re.IGNORECASE):
+                floor, row, col = myLocationQueries[location]
+                print(f"Location found: {location}, at floor {floor} row {row}, column {col}")
+                location_found = True
+                path = bfs(myMap, tuple(pepper_position), (floor, row, col))
+                if path != None:
+                    guide_aux(path)   
+                    print(path)
+                else:
+                    print("Désolé, je ne peux pas atteindre cette destination.")
+                break

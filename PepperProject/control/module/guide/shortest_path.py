@@ -49,7 +49,7 @@ def create_3d_adjacency_matrix(mymap, goal):
     
     return adjacency_matrix
 
-def bfs_3d(mymap, start, goal):
+def bfs(mymap, start, goal):
     """
     Find the shortest path in a 3D matrix using BFS.
     """
@@ -113,7 +113,7 @@ def bfs_3d(mymap, start, goal):
 # goal = (1, 4, 5)   # Floor 1, Row 3, Column 3
 
 # # Find the shortest path
-# shortest_path = bfs_3d(university_matrix, start, goal)
+# shortest_path = bfs(university_matrix, start, goal)
 # if shortest_path:
 #     print("Shortest Path:", shortest_path)
 # else:
