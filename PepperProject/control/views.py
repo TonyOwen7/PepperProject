@@ -31,24 +31,7 @@ from guide import guide
 
 robot_process_manager = RobotProcessManager()
 language = "fr"
-
-def robot_configuration(request):
-    return render(request, 'control/form.html')
-
-
-def control_page(request):
-    if request.user.is_authenticated:
-        # Fetch the user's current map
-        current_map = get_object_or_404(Map, user=request.user, is_current=True)
-        if not current_map:
-            current_map = get_object_or_404(Map, user=request.user).first()          
-        
-        if current_map:
-            matrices = current_map.matrices  # Use the matrices field
-            rooms = current_map.rooms  # Use the rooms field
-        else:
-            # If no current map, use the default map
-            matrices = [
+matrices = [
                 [
                     [0, 2, 2, 0, 1, 0],
                     [0, 0, 0, 0, 1, 0],
@@ -58,37 +41,31 @@ def control_page(request):
                 ]
             ]
 
-            rooms = {
-                "Accueil": [1, 0, 1],  # [matrix_index, row_index, col_index]
-                "Bureau des enseignants": [1, 4, 4],
-                "Classe 1": [1, 0, 2],
-                "Classe 2": [1, 2, 5],
-                "Classe 3": [1, 4, 0],
-                "Toilette": [1, 2, 5],
-                "Bureau du directeur": [1, 4, 5]
-            }
-    else:
-        # Use the default map for unauthenticated users
-        matrices = [
-            [
-                [0, 2, 2, 0, 1, 0],
-                [0, 0, 0, 0, 1, 0],
-                [0, 1, 0, 0, 1, 2],
-                [0, 0, 0, 0, 2, 0],
-                [2, 1, 0, 1, 1, 2]
-            ]
-        ]
+rooms = {
+        "Accueil": [0, 0, 1], 
+        "Bureau des enseignants": [0, 4, 4],
+        "Classe 1": [0, 0, 2],
+        "Classe 2": [0, 2, 5],
+        "Classe 3": [0, 4, 0],
+        "Toilette": [0, 2, 5],
+        "Bureau du directeur": [0, 4, 5]
+    }
 
-        rooms = {
-            "Accueil": [1, 0, 1],  # [matrix_index, row_index, col_index]
-            "Bureau des enseignants": [1, 4, 4],
-            "Classe 1": [1, 0, 2],
-            "Classe 2": [1, 2, 5],
-            "Classe 3": [1, 4, 0],
-            "Toilette": [1, 2, 5],
-            "Bureau du directeur": [1, 4, 5]
-        }
+def robot_configuration(request):
+    return render(request, 'control/form.html')
 
+
+def control_page(request):
+    global matrices, rooms
+    if request.user.is_authenticated:
+        current_map = get_object_or_404(Map, user=request.user, is_current=True)
+        if not current_map:
+            current_map = get_object_or_404(Map, user=request.user).first()          
+        
+        if current_map:
+            matrices = current_map.matrices  # Use the matrices field
+            rooms = current_map.rooms  # Use the rooms field
+        
     return render(request, 'control/control.html',
         { 
             'matrices':json.dumps(matrices),  
@@ -176,18 +153,20 @@ def handle_move(request):
 
 
 def handle_guiding(request):
+    global matrices, rooms
+    current_robot = None
+  
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             location = data.get('location')
 
             if location:
-                current_robot = get_object_or_404(Robot, user=request.user, is_current=True)
-                current_map = get_object_or_404(Map, user=request.user, is_current=True)
-                rooms = {}
-                for key, value in current_map.rooms.items():
-                    rooms[key] =  value
-                guide("pepper_dcm_bringup", location, current_map.matrices, current_robot, rooms)  # Uncomment if needed
+                if request.user.is_authenticated:
+                    current_robot = get_object_or_404(Robot, user=request.user, is_current=True)
+                    
+                
+                guide("pepper_dcm_bringup", location, matrices, current_robot, rooms)  # Uncomment if needed
                 return JsonResponse({'message': 'Le robot est en train de se déplacer vers la destination'})
             else:
                 return JsonResponse({'message': 'Aucune commande n\'a été donnée'}, status=400)

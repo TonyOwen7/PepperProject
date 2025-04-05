@@ -117,7 +117,7 @@ def guide_aux(path):
 
     go_up_to_the_next_floor = False
     i = 0
-    while i < len (commands) and not go_up_to_the_next_floor:
+    while i < len(commands) and not go_up_to_the_next_floor:
         if commands[i][0] == "monter":
             go_up_to_the_next_floor = True
         move("pepper_dcm_bringup", commands[i][0], commands[i][1])
@@ -125,12 +125,14 @@ def guide_aux(path):
     if go_up_to_the_next_floor:
         pepper_speak("Je ne peux plus monter, je vais vous guider vers votre destination. Maintenant, prenez l'ascenseur")
 
-        while i < len (commands):
+        while i < len(commands):
             if commands[i][0] == "monter":
                 pepper_speak("Prendre l'ascenseur")
             else:
                 pepper_speak(commands[i][0])
             i+=1
+
+    print("guide")
             
 def guide(driver, chosen_location, myMap=None, robot=None, myLocationQueries=None):
     global university_matrix, location_queries, pepper_position, pepper_direction
@@ -140,7 +142,7 @@ def guide(driver, chosen_location, myMap=None, robot=None, myLocationQueries=Non
         pepper_direction = [robot.direction] 
 
     if not robot:
-        for location in location_queries:
+        for location in location_queries.keys():
             location_regex = re.sub(r"\s+", r"\\s+", location)
 
             if re.search(location_regex, chosen_location, re.IGNORECASE):
@@ -166,7 +168,6 @@ def guide(driver, chosen_location, myMap=None, robot=None, myLocationQueries=Non
                 path = bfs(myMap, tuple(pepper_position), (floor, row, col))
                 if path != None:
                     guide_aux(path)   
-                    print(path)
                 else:
                     print("Désolé, je ne peux pas atteindre cette destination.")
                 break

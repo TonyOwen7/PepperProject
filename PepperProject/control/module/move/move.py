@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # movement_controller.py
 
-# import rospy
-# from geometry_msgs.msg import Twist
+import rospy
+from geometry_msgs.msg import Twist
 
 import sys
 import time
